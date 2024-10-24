@@ -16,7 +16,7 @@
 
 --   (2) At the command prompt, run this script.
 
---       EXAMPLE:    psql -d bludb -f c:\temp\reporter_aiops_noise_reduction.sql
+--       EXAMPLE:    psql -d postgres -f postgres/reporter_aiops_noise_reduction.sql
 --------------------------------------------------------------------------------
 
 --\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\

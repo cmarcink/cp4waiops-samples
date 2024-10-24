@@ -14,7 +14,7 @@
 
 --   (2) At the command window prompt, run this script.
 
---       EXAMPLE:    psql -d bludb -f c:\temp\reporter_aiops_noise_reduction_remove.sql
+--       EXAMPLE:    psql -d postgres -f postgres/reporter_aiops_noise_reduction_remove.sql
 ----------------------------------- ---------------------------------------------
 
 -- SET SCHEMA 'aiops_reporting' ;
