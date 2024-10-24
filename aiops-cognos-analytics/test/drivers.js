@@ -12,6 +12,16 @@ const fs = require('fs');
  * Normalize to postgres standard.
  */
 const drivers = {
+  postgres: (config) => {
+    const pg = require('pg');
+    const client = new pg.Client(config);
+    client.executeFile = async (file) => {
+      const sql = fs.readFileSync(file, 'utf8');
+      return await client.query(sql);
+    };
+    client.formatTimestamp = (timestamp) => timestamp;
+    return client;
+  },
   db2: (config) => {
     const db2 = require('ibm_db');
     const { normalizeResponse, stripComments } = require('./utils');

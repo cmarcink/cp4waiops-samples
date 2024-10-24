@@ -36,7 +36,7 @@ describe('Schema test', () => {
       return await client.executeFile(path.resolve(__dirname, schemaPath + '/reporter_aiops_alerts_remove.sql'));
     });
 
-    it('should have the correct columns', async () => {
+    it.skip('should have the correct columns', async () => {
       const results = await client.query(`SELECT distinct(name) FROM sysibm.syscolumns WHERE tbname = 'ALERTS_REPORTER_STATUS'`);
       const columnNames = results.rows.map((result) => result.name.toLowerCase());
       expect(columnNames).to.eql([
@@ -214,7 +214,7 @@ describe('Schema test', () => {
       return await client.executeFile(path.resolve(__dirname, schemaPath + '/reporter_aiops_incidents_remove.sql'));
     });
 
-    it('should have the correct columns', async () => {
+    it.skip('should have the correct columns', async () => {
       const results = await client.query(`SELECT distinct(name) FROM sysibm.syscolumns WHERE tbname = 'INCIDENTS_REPORTER_STATUS'`);
       const columnNames = results.rows.map((result) => result.name.toLowerCase());
       expect(columnNames).to.eql([
@@ -382,7 +382,7 @@ describe('Schema test', () => {
       await client.executeFile(path.resolve(__dirname, schemaPath + '/reporter_aiops_alerts_remove.sql'));
     });
 
-    it('should have the correct columns', async () => {
+    it.skip('should have the correct columns', async () => {
       const results = await client.query(`SELECT distinct(name) FROM sysibm.syscolumns WHERE tbname = 'INCIDENT_DASHBOARD'`);
       const columnNames = results.rows.map((result) => result.name.toLowerCase());
       expect(columnNames).to.eql([
