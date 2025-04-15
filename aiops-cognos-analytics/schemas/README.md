@@ -48,6 +48,12 @@ If you prefer to use the UI (as with IBM DB2 on Cloud), paste the contents of ea
 
 > If you run the install script multiple times, only those components that do not yet exist will be created.
 
+## Upgrading
+If you have already installed schemas from an earlier version of Cloud Pak for AIOps, run the upgrade script to get the latest changes. While not required, if you would like to backup your DB2 database before upgrading instructions can be found [here](https://www.ibm.com/docs/en/db2/11.5?topic=ad-backing-up-restoring-db2).
+```
+db2 -t -vf db2/upgrade.sql
+```
+
 ## Using the schemas
 
 Now that the schemas have been installed, you can take steps to integrate with AIOps. The following are the basic steps to get data into DB2 to be used in Cognos. Refer to AIOps and Cognos documentation for complete details.
@@ -151,7 +157,8 @@ db2 -td@ -vf db2/reporter_aiops_noise_reduction_remove.sql
 ## Testing
 1. Complete the `config.json` with database connection details. You can also set these values in the command-line window, e.g. `export connection__user=db2inst1`.
 2. Make sure the database is running.
-3. Run `npm run test`.
+3. Connect to the database defined in the config file, e.g. `db2 connect to bludb user db2inst1`
+4. Run `npm run test`.
 > NOTE: Testing from Linux AMD64 is currently supported.
 
 ## Reference
@@ -227,14 +234,3 @@ INCIDENTS_AUDIT_UPDATE_OWNER - Updates previous incident owner state
 INCIDENTS_AUDIT_UPDATE_TEAM - Updates previous incident team state
 
 INCIDENTS_AUDIT_UPDATE_STATE - Updates previous incident status
-
-AIOPS_ALERT_COUNT_UPDATER_ON_UPDATE - Updates tallys when an alert is updated
-
-ALERT_AIOPS_COUNT_UPDATER_ON_INSERT - Updates tallys when an alert is created
-
-AIOPS_INCIDENT_COUNT_UPDATER_ON_UPDATE - Updates tallys when an incident is updated
-
-AIOPS_INCIDENT_COUNT_UPDATER_ON_INSERT - Updates tallys when an incident is created
-
-### Stored procedures
-INSERT_ALERT_COUNTS_UPDATE - Inserts a tally of event instances, alerts and incidents at the current point in time
