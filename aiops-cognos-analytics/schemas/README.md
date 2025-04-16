@@ -59,7 +59,7 @@ psql -U <user> -d <database> -f postgres/reporter_aiops_incidents.sql
 ```
 psql -U <user> -d <database> -f postgres/reporter_aiops_noise_reduction.sql
 ```
-If the database is not local, use -h <host> -p <port>.
+If the database is not local, `-h <host> -p <port>`.
 
 If you prefer to use the UI (as with IBM DB2 on Cloud), paste the contents of each script into the SQL command window to run. Make sure to configure the command terminator to use @.
 
