@@ -4,7 +4,7 @@ Database schemas for alerts or incidents from Cloud Pak for AIOps for use in das
 
 ## Before installing
 
-Decide if you want to create a new database or install into an existing one. To create a new database (replacing the database \<name\>, \<user\> and \<password\>),
+Decide if you want to create a new database or install into an existing one. To create a new database (replacing the database \<database\>, \<user\> and \<password\>),
 ```
 db2 CREATE DATABASE <database>
 db2 CONNECT TO <database> USER <user> USING <password>
@@ -15,7 +15,7 @@ export PGPASSWORD=<pw>
 psql -h <host> -p <port> -U <user> -c 'create database <database>;'
 ```
 
-Otherwise, install into an existing database. For DB2, make sure you are connected and using the desired database (replacing the database \<name\>, \<user\> and \<password\>). PostgreSQL does not require setting connection details up front.
+Otherwise, install into an existing database. For DB2, make sure you are connected and using the desired database (replacing the database \<database\>, \<user\> and \<password\>). PostgreSQL does not require setting connection details up front.
 ```
 db2 CONNECT TO <database> USER <user> USING <password>
 ```
