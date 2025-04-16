@@ -1,24 +1,29 @@
 # Schemas
 
-Schemas for reporting in Cloud Pak for AIOps using Cognos Analytics with DB2
+Database schemas for alerts or incidents from Cloud Pak for AIOps for use in dashboards, reports, and audit purposes.
 
 ## Before installing
 
 Decide if you want to create a new database or install into an existing one. To create a new database (replacing the database \<name\>, \<user\> and \<password\>),
 ```
-db2 CREATE DATABASE <name>
-db2 CONNECT TO <name> USER <user> USING <password>
+db2 CREATE DATABASE <database>
+db2 CONNECT TO <database> USER <user> USING <password>
+```
+For PostgreSQL,
+```
+export PGPASSWORD=<pw>
+psql -h <host> -p <port> -U <user> -c 'create database <database>;'
 ```
 
-Otherwise, install into an existing database. Make sure you are connected and using the desired database (replacing the database \<name\>, \<user\> and \<password\>),
+Otherwise, install into an existing database. For DB2, make sure you are connected and using the desired database (replacing the database \<name\>, \<user\> and \<password\>). PostgreSQL does not require setting connection details up front.
 ```
-db2 CONNECT TO <name> USER <user> USING <password>
+db2 CONNECT TO <database> USER <user> USING <password>
 ```
 
-If you wish to namespace the reporting tables, you can also use a DB2 SCHEMA in which the new reporting tables will belong. Refer to DB2 documentation on using a DB2 SCHEMA.
+If you wish to namespace the reporting tables, you can also use a schema in which the new reporting tables will belong. Refer to your database documentation on using a schema.
 
 ### Customization
-The alerts table provides a number of basic columns for reporting, but it's often the case where you have enriched alerts with custom properties. To include custom properties in this schema, simply edit the db2/reporter_aiops_alerts.sql and add columns to the ALERTS_REPORTER_STATUS table.
+The alerts table provides a number of basic columns for reporting, but it's often the case where you have enriched alerts with custom properties. To include custom properties in this schema, simply edit the reporter_aiops_alerts.sql and add columns to the ALERTS_REPORTER_STATUS table.
 
 ```
 --+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -44,23 +49,35 @@ db2 -td@ -vf db2/reporter_aiops_incidents.sql
 db2 -td@ -vf db2/reporter_aiops_noise_reduction.sql
 ```
 
+For PostgreSQL,
+```
+psql -U <user> -d <database> -f postgres/reporter_aiops_alerts.sql
+```
+```
+psql -U <user> -d <database> -f postgres/reporter_aiops_incidents.sql
+```
+```
+psql -U <user> -d <database> -f postgres/reporter_aiops_noise_reduction.sql
+```
+If the database is not local, use -h <host> -p <port>.
+
 If you prefer to use the UI (as with IBM DB2 on Cloud), paste the contents of each script into the SQL command window to run. Make sure to configure the command terminator to use @.
 
 > If you run the install script multiple times, only those components that do not yet exist will be created.
 
 ## Upgrading
-If you have already installed schemas from an earlier version of Cloud Pak for AIOps, run the upgrade script to get the latest changes. While not required, if you would like to backup your DB2 database before upgrading instructions can be found [here](https://www.ibm.com/docs/en/db2/11.5?topic=ad-backing-up-restoring-db2).
+If you have already installed schemas in DB2 from an earlier version of Cloud Pak for AIOps, run the upgrade script to get the latest changes. While not required, if you would like to backup your DB2 database before upgrading instructions can be found [here](https://www.ibm.com/docs/en/db2/11.5?topic=ad-backing-up-restoring-db2).
 ```
 db2 -t -vf db2/upgrade.sql
 ```
 
 ## Using the schemas
 
-Now that the schemas have been installed, you can take steps to integrate with AIOps. The following are the basic steps to get data into DB2 to be used in Cognos. Refer to AIOps and Cognos documentation for complete details.
+Now that the schemas have been installed, you can take steps to integrate with AIOps. The following are the basic steps to get data into your database to be used in Cognos. Refer to AIOps and Cognos documentation for complete details.
 
 1. Configure an integration - The schemas can be used for Cloud Pak for AIOps Netcool Impact or IBM Db2 integrations. 
 
-2. Configure a policy - For alert and incidents data to flow into the DB2 database, configure the "Invoke IBM Tivoli Netcool/Impact" or "Populate a dashboard or report" policy. You'll need separate policies for alerts and incidents. Use the details of the integration you configured in the previous step, and customize the column mappings. The id and tenantid are required.
+2. Configure a policy - For alert and incidents data to flow into the database, configure the "Invoke IBM Tivoli Netcool/Impact" or "Populate an external database" policy. You'll need separate policies for alerts and incidents. Use the details of the integration you configured in the previous step, and customize the column mappings. The id and tenantid are required.
 
 The following are provided as defaults for alerts:
 ```
@@ -128,7 +145,7 @@ $replace($replace($replace(<timestamp property>}, 'T', '-'), ':', '.'), 'Z', '00
 
 Once the policy has been saved, new alerts and incidents and state changes to existing ones (if update trigger type is configured) will be forwarded to the database.
 
-After you've created or updated alerts or incidents, verify data exists in the database from the DB2 command prompt or view it the DB2 UI:
+After you've created or updated alerts or incidents, verify data exists in the database from the database command prompt or view it the database UI:
 ```
 db2 SELECT * from ALERTS_REPORTER_STATUS
 ```
@@ -136,6 +153,12 @@ and
 ```
 db2 SELECT * from INCIDENTS_REPORTER_STATUS
 ```
+
+For PostgreSQL,
+```
+psql -U <user> -d <database> -c 'SELECT * from <table>;'
+```
+
 You should see a row for every alert and incident that has been created or updated based on the policy conditions and triggers.
 
 Now you're all set to create reports in Cognos Analytics. See AIOps product documentation on how set up the data server connection and import data.
@@ -154,12 +177,23 @@ db2 -td@ -vf db2/reporter_aiops_incidents_remove.sql
 db2 -td@ -vf db2/reporter_aiops_noise_reduction_remove.sql
 ```
 
+For PostgreSQL,
+```
+psql -U <user> -d <database> -f postgres/reporter_aiops_alerts_remove.sql
+```
+```
+psql -U <user> -d <database> -f postgres/reporter_aiops_incidents_remove.sql
+```
+```
+psql -U <user> -d <database> -f postgres/reporter_aiops_noise_reduction_remove.sql
+```
+
 ## Testing
-1. Complete the `config.json` with database connection details. You can also set these values in the command-line window, e.g. `export connection__user=db2inst1`.
+1. Complete the `config.json` with database connection details. You can also set these values in the command-line window, e.g. `export connection__user=db2inst1`. Supported client values include "db2" and "postgres".
 2. Make sure the database is running.
-3. Connect to the database defined in the config file, e.g. `db2 connect to bludb user db2inst1`
+3. For DB2, connect to the database defined in the config file, e.g. `db2 connect to bludb user db2inst1`
 4. Run `npm run test`.
-> NOTE: Testing from Linux AMD64 is currently supported.
+> NOTE: Testing DB2 is currently supported on Linux AMD64 only.
 
 ## Reference
 

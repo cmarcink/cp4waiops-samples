@@ -68,7 +68,7 @@ CREATE TABLE ALERTS_REPORTER_STATUS (
     lastStateChangeTime TIMESTAMP,
     langId              VARCHAR(32),
     expirySeconds       INTEGER,
-    uuid                VARCHAR(255) NOT NULL GENERATED ALWAYS AS (tenantid || '_' || id) STORED,
+    uuid                VARCHAR(255) NOT NULL,
     PRIMARY KEY (uuid) );
 
 --\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
@@ -194,8 +194,6 @@ INSERT INTO ALERTS_SEVERITY_TYPES VALUES ( 4, 'Minor' ) ;
 INSERT INTO ALERTS_SEVERITY_TYPES VALUES ( 5, 'Major' ) ;
 INSERT INTO ALERTS_SEVERITY_TYPES VALUES ( 6, 'Critical' ) ;
 
-
-COMMIT WORK ;
 
 --\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
 -- This section lists the triggers and the procedures for audit
@@ -468,5 +466,3 @@ UNION SELECT
         CAST(NULL AS VARCHAR),
         team
 FROM ALERTS_AUDIT_TEAM ;
-
-COMMIT WORK ;

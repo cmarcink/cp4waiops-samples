@@ -36,9 +36,9 @@ describe('Schema test', () => {
       return await client.executeFile(path.resolve(__dirname, schemaPath + '/reporter_aiops_alerts_remove.sql'));
     });
 
-    it.skip('should have the correct columns', async () => {
-      const results = await client.query(`SELECT distinct(name) FROM sysibm.syscolumns WHERE tbname = 'ALERTS_REPORTER_STATUS'`);
-      const columnNames = results.rows.map((result) => result.name.toLowerCase());
+    it('should have the correct columns', async () => {
+      const results = await client.getColumns('ALERTS_REPORTER_STATUS');
+      const columnNames = results.rows.map((result) => result.column_name.toLowerCase()).sort();
       expect(columnNames).to.eql([
         'acknowledged',
         'anomalyinsights',
@@ -214,9 +214,9 @@ describe('Schema test', () => {
       return await client.executeFile(path.resolve(__dirname, schemaPath + '/reporter_aiops_incidents_remove.sql'));
     });
 
-    it.skip('should have the correct columns', async () => {
-      const results = await client.query(`SELECT distinct(name) FROM sysibm.syscolumns WHERE tbname = 'INCIDENTS_REPORTER_STATUS'`);
-      const columnNames = results.rows.map((result) => result.name.toLowerCase());
+    it('should have the correct columns', async () => {
+      const results = await client.getColumns('INCIDENTS_REPORTER_STATUS');
+      const columnNames = results.rows.map((result) => result.column_name.toLowerCase()).sort();
       expect(columnNames).to.eql([
         'alerts',
         'chatopsintegrations',
@@ -382,9 +382,9 @@ describe('Schema test', () => {
       await client.executeFile(path.resolve(__dirname, schemaPath + '/reporter_aiops_alerts_remove.sql'));
     });
 
-    it.skip('should have the correct columns', async () => {
-      const results = await client.query(`SELECT distinct(name) FROM sysibm.syscolumns WHERE tbname = 'INCIDENT_DASHBOARD'`);
-      const columnNames = results.rows.map((result) => result.name.toLowerCase());
+    it('should have the correct columns', async () => {
+      const results = await client.getColumns('INCIDENT_DASHBOARD');
+      const columnNames = results.rows.map((result) => result.column_name.toLowerCase()).sort();      
       expect(columnNames).to.eql([
         'alertcount',
         'assignedcount',

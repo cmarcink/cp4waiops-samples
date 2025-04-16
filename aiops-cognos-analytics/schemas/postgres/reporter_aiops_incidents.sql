@@ -54,7 +54,7 @@ CREATE TABLE INCIDENTS_REPORTER_STATUS (
     chatOpsIntegrations INTEGER,
     resourceId          VARCHAR(255),
     policyId            VARCHAR(64),
-    uuid                VARCHAR(255) NOT NULL GENERATED ALWAYS AS (tenantid || '_' || id) STORED,
+    uuid                VARCHAR(255) NOT NULL,
     PRIMARY KEY (uuid) );
 
 --\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
@@ -158,8 +158,6 @@ CREATE INDEX INCIDENTS_AUDIT_STATE_IDX
        ON INCIDENTS_AUDIT_STATE (
                uuid,
                complete );
-
-COMMIT WORK;
 
 --\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
 -- This section lists the triggers and the procedures for audit
@@ -404,5 +402,3 @@ UNION SELECT
         CAST(NULL AS VARCHAR),
         team
 FROM INCIDENTS_AUDIT_TEAM;
-
-COMMIT WORK;

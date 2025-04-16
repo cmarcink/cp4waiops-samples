@@ -20,6 +20,7 @@ const drivers = {
       return await client.query(sql);
     };
     client.formatTimestamp = (timestamp) => timestamp;
+    client.getColumns = async (table) => await client.query(`SELECT column_name FROM information_schema.columns WHERE table_name = '${table.toLowerCase()}'`);
     return client;
   },
   db2: (config) => {
@@ -28,16 +29,17 @@ const drivers = {
     const c = config;
     const connStr = `DATABASE=${c.database};HOSTNAME=${c.host};UID=${c.user};PWD=${c.password};PORT=${c.port};PROTOCOL=TCPIP`;
     let connection = null;
+    const query = (str, params) => {
+      let rows = [];
+      if (connection) {
+        rows = connection.querySync(str.replaceAll(/\$\d+/gi, '?'), params);
+        rows = normalizeResponse(rows);
+      }
+      return { rows };
+    };
     return {
       connect: async () => { connection = await db2.open(connStr); },
-      query: (str, params) => {
-        let rows = [];
-        if (connection) {
-          rows = connection.querySync(str.replaceAll(/\$\d+/gi, '?'), params);
-          rows = normalizeResponse(rows);
-        }
-        return { rows };
-      },
+      query: query,
       executeFile: (file, delim = '@') => {
         if (connection) {
           stripComments(file, file + 'clean');
@@ -49,6 +51,10 @@ const drivers = {
       end: async () => { if (connection) return await connection.close(); connection = null; },
       formatTimestamp: (timestamp) => {
         return timestamp.toString().replace('T', '-').replaceAll(':', '.').replace('Z', '000')
+      },
+      getColumns: async (table) => {
+        const columns = query(`SELECT distinct(name) FROM sysibm.syscolumns WHERE tbname = '${table}'`);
+        return { rows: columns.rows.map(c => ({ column_name: c.name })) };
       }
     };
   }

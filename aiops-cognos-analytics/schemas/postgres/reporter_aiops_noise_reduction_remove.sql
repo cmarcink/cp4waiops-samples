@@ -23,6 +23,4 @@
 -- Drop views related to noise reduction.
 ------------------------------------------------------------------------------
 
-DROP VIEW INCIDENT_DASHBOARD ;
-
-COMMIT WORK ;
+DROP VIEW IF EXISTS INCIDENT_DASHBOARD ;
