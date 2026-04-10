@@ -334,10 +334,16 @@ function createNamespace() {
         "clientId": "$clientId",
         "returnUrl": "$url$gateway/completeAuth.jsp",
         "clientSecret": "$clientSecret",
+        "acMemberOf": "groups",
         "customProperties": {
           "preferred_username": "preferred_username",
           "uniqueSecurityName": "uniqueSecurityName",
           "aiops_proxy": "$cpdRoute"
+        },
+        "advancedProperties": {
+          "groupStrategy": "idToken",
+          "groupIdMapping": "groupIds",
+          "groupNameMapping": "groups"
         }
       }
 EOF
@@ -371,10 +377,16 @@ EOF
         "accountCamidProperty": "uniqueSecurityName",
         "acEmail": "email",
         "acUsername": "preferred_username",
+        "acMemberOf": "groups",
         "customProperties": {
           "preferred_username": "preferred_username",
           "uniqueSecurityName": "uniqueSecurityName",
           "aiops_proxy": "$cpdRoute"
+        },
+        "advancedProperties": {
+          "groupStrategy": "idToken",
+          "groupIdMapping": "groupIds",
+          "groupNameMapping": "groups"
         }
       }
 EOF
@@ -400,6 +412,43 @@ function removeNamespace() {
   echo
 }
 
+function createUIExtension() {
+  echo "Creating UI extension ConfigMap ..."
+
+  # Get the directory where this script is located
+  script_dir=$(dirname "$0")
+  template_file="$script_dir/templates/zen-ca-extension-cfgmap.yaml"
+
+  if [ ! -f "$template_file" ]; then
+    echo "Error: Template file not found at $template_file"
+    echo
+    exit 1
+  fi
+
+  # Apply the template with variable substitution
+  sed -e "s|COGNOS_URL_PLACEHOLDER|$url$gateway|g" \
+      -e "s|namespace: aiops|namespace: $aiopsNamespace|g" \
+      "$template_file" | kubectl apply -f -
+
+  if [ $? -gt 0 ]; then
+    echo "Failed to create UI extension ConfigMap"
+    echo
+    exit 1
+  fi
+  echo
+}
+
+function removeUIExtension() {
+  echo "Removing UI extension ConfigMap ..."
+  kubectl delete configmap aiops-ca-cognos-extension -n $aiopsNamespace 2>/dev/null
+  if [ $? -eq 0 ]; then
+    echo "UI extension ConfigMap removed"
+  else
+    echo "UI extension ConfigMap not found or already removed"
+  fi
+  echo
+}
+
 function main() {
   prereqCheck
   loginCognos
@@ -408,10 +457,12 @@ function main() {
     fixClient
     addToAllowList
     createNamespace
+    createUIExtension
   else
     removeClient
     removeFromAllowList
     removeNamespace
+    removeUIExtension
   fi
   echo "Done"
 }

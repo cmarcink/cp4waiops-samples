@@ -1,21 +1,11 @@
 {
-  "__inputs": [
-    {
-      "name": "DS_PROMETHEUS",
-      "label": "prometheus",
-      "description": "",
-      "type": "datasource",
-      "pluginId": "prometheus",
-      "pluginName": "Prometheus"
-    }
-  ],
   "__elements": {},
   "__requires": [
     {
       "type": "grafana",
       "id": "grafana",
       "name": "Grafana",
-      "version": "11.3.0"
+      "version": "12.3.0"
     },
     {
       "type": "panel",
@@ -73,7 +63,6 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
-  "id": null,
   "links": [],
   "panels": [
     {
@@ -107,14 +96,13 @@
             "content": "# Metric Integrations Overview\n\nIBM Cloud Pak for AIOps is capable of ingesting metrics from a variety of sources.\nThis dashboard will provide insight into the health & performance of the following integrations: AWS CloudWatch, AppDynamics, Instana, New Relic, Splunk, Zabbix\n\nOnly integrations that have been created in the IBM Cloud Pak for AIOps Integrations page will have metrics visible here.",
             "mode": "markdown"
           },
-          "pluginVersion": "11.3.0",
+          "pluginVersion": "12.3.0",
           "title": "",
           "type": "text"
         },
         {
           "datasource": {
-            "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "name": "prometheus"
           },
           "description": "Count that tracks the number of pods that were newly created within the time range.\n",
           "fieldConfig": {
@@ -220,7 +208,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "dark-green"
+                    "color": "dark-green",
+                    "value": 0
                   }
                 ]
               }
@@ -231,7 +220,7 @@
             "h": 1,
             "w": 24,
             "x": 0,
-            "y": 297
+            "y": 209
           },
           "id": 94,
           "options": {
@@ -241,9 +230,7 @@
             "orientation": "auto",
             "percentChangeColorMode": "standard",
             "reduceOptions": {
-              "calcs": [
-                "lastNotNull"
-              ],
+              "calcs": [],
               "fields": "",
               "values": false
             },
@@ -251,18 +238,17 @@
             "text": {
               "valueSize": 20
             },
-            "textMode": "auto",
+            "textMode": "value",
             "wideLayout": true
           },
-          "pluginVersion": "11.3.0",
+          "pluginVersion": "12.3.0",
           "targets": [
             {
               "datasource": {
-                "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "name": "prometheus"
               },
               "editorMode": "code",
-              "expr": "sum(((sum((time() - kube_pod_start_time{pod=~\"nrelic-conn-.*|ibm-grpc-instana-connector-.*|appd-conn-.*|ibm-awscw-conn-.*|splunk-conn-.*|ibm-zabbix-conn-.*\"}) - $__range_s) by (pod)) < 60) <= bool 0)",
+              "expr": "sum(((sum((time() - kube_pod_start_time{pod=~\".*nrelic-conn.*|.*instana-conn.*|.*appd-conn.*|.*awscw-conn.*|.*splunk-conn.*|.*zabbix-conn.*\"}) - $__range_s) by (pod)) < 60) <= bool 0)",
               "legendFormat": "__auto",
               "range": true,
               "refId": "A"
@@ -273,8 +259,7 @@
         },
         {
           "datasource": {
-            "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "name": "prometheus"
           },
           "description": "This panel displays the number of active pods for all defined Metric integration pods. Pods stuck in \"Pending\" or \"Unknown\" states for prolonged periods of time are problematic and may result in loss of functionality.",
           "fieldConfig": {
@@ -285,17 +270,21 @@
               "custom": {
                 "align": "auto",
                 "cellOptions": {
-                  "type": "auto",
-                  "wrapText": true
+                  "type": "auto"
                 },
-                "inspect": false
+                "footer": {
+                  "reducers": []
+                },
+                "inspect": false,
+                "wrapText": true
               },
               "mappings": [],
               "thresholds": {
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": 0
                   }
                 ]
               }
@@ -306,34 +295,25 @@
             "h": 10,
             "w": 10,
             "x": 0,
-            "y": 298
+            "y": 210
           },
           "id": 93,
           "options": {
             "cellHeight": "sm",
-            "footer": {
-              "countRows": false,
-              "enablePagination": false,
-              "fields": "",
-              "reducer": [
-                "sum"
-              ],
-              "show": false
-            },
+            "enablePagination": false,
             "showHeader": true,
             "sortBy": []
           },
-          "pluginVersion": "11.3.0",
+          "pluginVersion": "12.3.0",
           "targets": [
             {
               "datasource": {
-                "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "name": "prometheus"
               },
               "disableTextWrap": false,
               "editorMode": "code",
               "exemplar": false,
-              "expr": "kube_pod_status_phase{pod=~\"nrelic-conn-.*|ibm-grpc-instana-connector-.*|appd-conn-.*|ibm-awscw-conn-.*|splunk-conn-.*|ibm-zabbix-conn-.*\", phase=~\"Running|Pending|Unknown\"} == 1",
+              "expr": "kube_pod_status_phase{pod=~\".*nrelic-conn.*|.*instana-conn.*|.*appd-conn.*|.*awscw-conn.*|.*splunk-conn.*|.*zabbix-conn.*\", phase=~\"Running|Pending|Unknown\"} == 1",
               "fullMetaSearch": false,
               "includeNullMetadata": true,
               "instant": true,
@@ -394,8 +374,7 @@
         },
         {
           "datasource": {
-            "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "name": "prometheus"
           },
           "description": "Pod uptimes for metric integrations.",
           "fieldConfig": {
@@ -427,6 +406,7 @@
                   "type": "linear"
                 },
                 "showPoints": "auto",
+                "showValues": false,
                 "spanNulls": false,
                 "stacking": {
                   "group": "A",
@@ -441,7 +421,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": 0
                   }
                 ]
               },
@@ -453,7 +434,7 @@
             "h": 10,
             "w": 14,
             "x": 10,
-            "y": 298
+            "y": 210
           },
           "id": 95,
           "options": {
@@ -464,19 +445,19 @@
               "showLegend": true
             },
             "tooltip": {
+              "hideZeros": false,
               "mode": "multi",
               "sort": "desc"
             }
           },
-          "pluginVersion": "11.3.0",
+          "pluginVersion": "12.3.0",
           "targets": [
             {
               "datasource": {
-                "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "name": "prometheus"
               },
               "editorMode": "code",
-              "expr": "time() -sum(kube_pod_start_time{pod=~\"nrelic-conn-.*|ibm-grpc-instana-connector-.*|appd-conn-.*|ibm-awscw-conn-.*|splunk-conn-.*|ibm-zabbix-conn-.*\"}) by (pod)",
+              "expr": "time() -sum(kube_pod_start_time{pod=~\".*nrelic-conn.*|.*instana-conn.*|.*appd-conn.*|.*awscw-conn.*|.*splunk-conn.*|.*zabbix-conn.*\"}) by (pod)",
               "legendFormat": "__auto",
               "range": true,
               "refId": "A"
@@ -501,8 +482,7 @@
       "panels": [
         {
           "datasource": {
-            "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "name": "prometheus"
           },
           "description": "Count of pods that have exceeded 80% of their CPU limits within the time range. This will result in CPU throttling and potentially temporary loss of functionality\n\nThis will only compare against the ***current*** CPU limit of each pod. If the limits were updated within the time range, the count may be inaccurate.",
           "fieldConfig": {
@@ -558,7 +538,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": 0
                   }
                 ]
               }
@@ -569,7 +550,7 @@
             "h": 1,
             "w": 12,
             "x": 0,
-            "y": 911
+            "y": 2
           },
           "id": 203,
           "options": {
@@ -579,9 +560,7 @@
             "orientation": "auto",
             "percentChangeColorMode": "standard",
             "reduceOptions": {
-              "calcs": [
-                "lastNotNull"
-              ],
+              "calcs": [],
               "fields": "",
               "values": false
             },
@@ -592,15 +571,14 @@
             "textMode": "value",
             "wideLayout": true
           },
-          "pluginVersion": "11.3.0",
+          "pluginVersion": "12.3.0",
           "targets": [
             {
               "datasource": {
-                "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "name": "prometheus"
               },
               "editorMode": "code",
-              "expr": "sum((((max(kube_pod_container_resource_limits{pod=~\"nrelic-conn-.*|ibm-grpc-instana-connector-.*|appd-conn-.*|ibm-awscw-conn-.*|splunk-conn-.*|ibm-zabbix-conn-.*\", container!=\"\", container!=\"POD\", resource=\"cpu\"}) by (pod)) * 0.8 <= max(max_over_time(node_namespace_pod_container:container_cpu_usage_seconds_total:sum_irate{pod=~\"nrelic-conn-.*|ibm-grpc-instana-connector-.*|appd-conn-.*|ibm-awscw-conn-.*|splunk-conn-.*|ibm-zabbix-conn-.*\", container!=\"\", container!=\"POD\"}[$__range])) by (pod)) or vector(0)) > bool 0)",
+              "expr": "sum((((max(kube_pod_container_resource_limits{pod=~\".*nrelic-conn.*|.*instana-conn.*|.*appd-conn.*|.*awscw-conn.*|.*splunk-conn.*|.*zabbix-conn.*\", container!=\"\", container!=\"POD\", resource=\"cpu\"}) by (pod)) * 0.8 <= max(max_over_time(node_namespace_pod_container:container_cpu_usage_seconds_total:sum_irate{pod=~\".*nrelic-conn.*|.*instana-conn.*|.*appd-conn.*|.*awscw-conn.*|.*splunk-conn.*|.*zabbix-conn.*\", container!=\"\", container!=\"POD\"}[$__range])) by (pod)) or vector(0)) > bool 0)",
               "legendFormat": "__auto",
               "range": true,
               "refId": "A"
@@ -611,8 +589,7 @@
         },
         {
           "datasource": {
-            "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "name": "prometheus"
           },
           "description": "Count of component pods that have exceeded their memory limits within the time range.\n\nThis will only compare against the ***current*** memory limit of each pod. If the limits were updated within the time range, the count may be inaccurate.",
           "fieldConfig": {
@@ -667,7 +644,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "dark-green"
+                    "color": "dark-green",
+                    "value": 0
                   }
                 ]
               }
@@ -678,7 +656,7 @@
             "h": 1,
             "w": 12,
             "x": 12,
-            "y": 911
+            "y": 2
           },
           "id": 201,
           "options": {
@@ -701,15 +679,14 @@
             "textMode": "value",
             "wideLayout": true
           },
-          "pluginVersion": "11.3.0",
+          "pluginVersion": "12.3.0",
           "targets": [
             {
               "datasource": {
-                "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "name": "prometheus"
               },
               "editorMode": "code",
-              "expr": "sum((((max(kube_pod_container_resource_limits{pod=~\"nrelic-conn-.*|ibm-grpc-instana-connector-.*|appd-conn-.*|ibm-awscw-conn-.*|splunk-conn-.*|ibm-zabbix-conn-.*\", container!=\"\", container!=\"POD\", resource=\"memory\"}) by (pod)) <= max(max_over_time(container_memory_working_set_bytes{pod=~\"nrelic-conn-.*|ibm-grpc-instana-connector-.*|appd-conn-.*|ibm-awscw-conn-.*|splunk-conn-.*|ibm-zabbix-conn-.*\", container!=\"\", container!=\"POD\"}[$__range])) by (pod)) or vector(0)) > bool 0)",
+              "expr": "sum((((max(kube_pod_container_resource_limits{pod=~\".*nrelic-conn.*|.*instana-conn.*|.*appd-conn.*|.*awscw-conn.*|.*splunk-conn.*|.*zabbix-conn.*\", container!=\"\", container!=\"POD\", resource=\"memory\"}) by (pod)) <= max(max_over_time(container_memory_working_set_bytes{pod=~\".*nrelic-conn.*|.*instana-conn.*|.*appd-conn.*|.*awscw-conn.*|.*splunk-conn.*|.*zabbix-conn.*\", container!=\"\", container!=\"POD\"}[$__range])) by (pod)) or vector(0)) > bool 0)",
               "legendFormat": "__auto",
               "range": true,
               "refId": "A"
@@ -720,8 +697,7 @@
         },
         {
           "datasource": {
-            "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "name": "prometheus"
           },
           "description": "Count of pods that have exceeded their CPU limits within the time range. This will result in CPU throttling and potentially temporary loss of functionality.\n\nThis will only compare against the ***current*** CPU limit of each pod. If the limits were updated within the time range, the count may be inaccurate.",
           "fieldConfig": {
@@ -777,7 +753,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": 0
                   }
                 ]
               }
@@ -788,7 +765,7 @@
             "h": 1,
             "w": 12,
             "x": 0,
-            "y": 1051
+            "y": 3
           },
           "id": 190,
           "options": {
@@ -798,9 +775,7 @@
             "orientation": "auto",
             "percentChangeColorMode": "standard",
             "reduceOptions": {
-              "calcs": [
-                "lastNotNull"
-              ],
+              "calcs": [],
               "fields": "",
               "values": false
             },
@@ -811,15 +786,14 @@
             "textMode": "value",
             "wideLayout": true
           },
-          "pluginVersion": "11.3.0",
+          "pluginVersion": "12.3.0",
           "targets": [
             {
               "datasource": {
-                "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "name": "prometheus"
               },
               "editorMode": "code",
-              "expr": "sum((((max(kube_pod_container_resource_limits{pod=~\"nrelic-conn-.*|ibm-grpc-instana-connector-.*|appd-conn-.*|ibm-awscw-conn-.*|splunk-conn-.*|ibm-zabbix-conn-.*\", container!=\"\", container!=\"POD\", resource=\"cpu\"}) by (pod)) <= max(max_over_time(node_namespace_pod_container:container_cpu_usage_seconds_total:sum_irate{pod=~\"nrelic-conn-.*|ibm-grpc-instana-connector-.*|appd-conn-.*|ibm-awscw-conn-.*|splunk-conn-.*|ibm-zabbix-conn-.*\", container!=\"\", container!=\"POD\"}[$__range])) by (pod)) or vector(0)) > bool 0)",
+              "expr": "sum((((max(kube_pod_container_resource_limits{pod=~\".*nrelic-conn.*|.*instana-conn.*|.*appd-conn.*|.*awscw-conn.*|.*splunk-conn.*|.*zabbix-conn.*\", container!=\"\", container!=\"POD\", resource=\"cpu\"}) by (pod)) <= max(max_over_time(node_namespace_pod_container:container_cpu_usage_seconds_total:sum_irate{pod=~\".*nrelic-conn.*|.*instana-conn.*|.*appd-conn.*|.*awscw-conn.*|.*splunk-conn.*|.*zabbix-conn.*\", container!=\"\", container!=\"POD\"}[$__range])) by (pod)) or vector(0)) > bool 0)",
               "legendFormat": "__auto",
               "range": true,
               "refId": "A"
@@ -830,8 +804,7 @@
         },
         {
           "datasource": {
-            "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "name": "prometheus"
           },
           "description": "Count of pods that have exceeded 80% of their memory limits within the time range.\n\nThis will only compare against the ***current*** memory limit of each pod. If the limits were updated within the time range, the count may be inaccurate.",
           "fieldConfig": {
@@ -887,7 +860,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": 0
                   }
                 ]
               }
@@ -898,7 +872,7 @@
             "h": 1,
             "w": 12,
             "x": 12,
-            "y": 1051
+            "y": 3
           },
           "id": 205,
           "options": {
@@ -921,15 +895,14 @@
             "textMode": "value",
             "wideLayout": true
           },
-          "pluginVersion": "11.3.0",
+          "pluginVersion": "12.3.0",
           "targets": [
             {
               "datasource": {
-                "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "name": "prometheus"
               },
               "editorMode": "code",
-              "expr": "sum((((max(kube_pod_container_resource_limits{pod=~\"nrelic-conn-.*|ibm-grpc-instana-connector-.*|appd-conn-.*|ibm-awscw-conn-.*|splunk-conn-.*|ibm-zabbix-conn-.*\", container!=\"\", container!=\"POD\", resource=\"memory\"}) by (pod)) * 0.8 <= max(max_over_time(container_memory_working_set_bytes{pod=~\"nrelic-conn-.*|ibm-grpc-instana-connector-.*|appd-conn-.*|ibm-awscw-conn-.*|splunk-conn-.*|ibm-zabbix-conn-.*\", container!=\"\", container!=\"POD\"}[$__range])) by (pod)) or vector(0)) > bool 0)",
+              "expr": "sum((((max(kube_pod_container_resource_limits{pod=~\".*nrelic-conn.*|.*instana-conn.*|.*appd-conn.*|.*awscw-conn.*|.*splunk-conn.*|.*zabbix-conn.*\", container!=\"\", container!=\"POD\", resource=\"memory\"}) by (pod)) * 0.8 <= max(max_over_time(container_memory_working_set_bytes{pod=~\".*nrelic-conn.*|.*instana-conn.*|.*appd-conn.*|.*awscw-conn.*|.*splunk-conn.*|.*zabbix-conn.*\", container!=\"\", container!=\"POD\"}[$__range])) by (pod)) or vector(0)) > bool 0)",
               "legendFormat": "__auto",
               "range": true,
               "refId": "A"
@@ -940,8 +913,7 @@
         },
         {
           "datasource": {
-            "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "name": "prometheus"
           },
           "description": "This panel displays the CPU usage over time of the integration pod(s). Spikes can occur during data collection, monitor these to ensure the integration is not ingesting more than it can process. Create more integrations as needed to ensure stable collection and timely processing.",
           "fieldConfig": {
@@ -973,6 +945,7 @@
                   "type": "linear"
                 },
                 "showPoints": "auto",
+                "showValues": false,
                 "spanNulls": false,
                 "stacking": {
                   "group": "A",
@@ -987,7 +960,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": 0
                   }
                 ]
               }
@@ -1041,7 +1015,7 @@
             "h": 7,
             "w": 12,
             "x": 0,
-            "y": 1142
+            "y": 4
           },
           "id": 330,
           "options": {
@@ -1055,30 +1029,29 @@
               "showLegend": true
             },
             "tooltip": {
+              "hideZeros": false,
               "mode": "multi",
               "sort": "desc"
             }
           },
-          "pluginVersion": "11.3.0",
+          "pluginVersion": "12.3.0",
           "targets": [
             {
               "datasource": {
-                "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "name": "prometheus"
               },
               "editorMode": "code",
-              "expr": "max(node_namespace_pod_container:container_cpu_usage_seconds_total:sum_irate{pod=~\"ibm-awscw-conn-.*\"}) by (pod)",
+              "expr": "max(node_namespace_pod_container:container_cpu_usage_seconds_total:sum_irate{pod=~\".*awscw-conn.*\"}) by (pod)",
               "legendFormat": "usage - {{pod}}",
               "range": true,
               "refId": "A"
             },
             {
               "datasource": {
-                "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "name": "prometheus"
               },
               "editorMode": "code",
-              "expr": "max(kube_pod_container_resource_requests{pod=~\"ibm-awscw-conn-.*\", resource=\"cpu\"})",
+              "expr": "max(kube_pod_container_resource_requests{pod=~\".*awscw-conn.*\", resource=\"cpu\"})",
               "hide": false,
               "instant": false,
               "legendFormat": "requests ",
@@ -1087,11 +1060,10 @@
             },
             {
               "datasource": {
-                "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "name": "prometheus"
               },
               "editorMode": "code",
-              "expr": "max(kube_pod_container_resource_limits{pod=~\"ibm-awscw-conn-.*\", resource=\"cpu\"}) ",
+              "expr": "max(kube_pod_container_resource_limits{pod=~\".*awscw-conn.*\", resource=\"cpu\"}) ",
               "hide": false,
               "instant": false,
               "legendFormat": "limits",
@@ -1104,8 +1076,7 @@
         },
         {
           "datasource": {
-            "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "name": "prometheus"
           },
           "description": "This panel displays the memory usage over time of the integration pod(s). Spikes can occur during data collection, monitor these to ensure the integration is not ingesting more than it can process. Create more integrations as needed to ensure stable collection and timely processing.",
           "fieldConfig": {
@@ -1137,6 +1108,7 @@
                   "type": "linear"
                 },
                 "showPoints": "auto",
+                "showValues": false,
                 "spanNulls": false,
                 "stacking": {
                   "group": "A",
@@ -1151,7 +1123,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": 0
                   }
                 ]
               },
@@ -1206,7 +1179,7 @@
             "h": 7,
             "w": 12,
             "x": 12,
-            "y": 1142
+            "y": 4
           },
           "id": 321,
           "options": {
@@ -1220,30 +1193,29 @@
               "showLegend": true
             },
             "tooltip": {
+              "hideZeros": false,
               "mode": "multi",
               "sort": "desc"
             }
           },
-          "pluginVersion": "11.3.0",
+          "pluginVersion": "12.3.0",
           "targets": [
             {
               "datasource": {
-                "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "name": "prometheus"
               },
               "editorMode": "code",
-              "expr": "max(container_memory_working_set_bytes{pod=~\"ibm-awscw-conn-.*\", container!=\"\", container!=\"POD\"}) by (pod)",
+              "expr": "max(container_memory_working_set_bytes{pod=~\".*awscw-conn.*\", container!=\"\", container!=\"POD\"}) by (pod)",
               "legendFormat": "usage - {{pod}}",
               "range": true,
               "refId": "A"
             },
             {
               "datasource": {
-                "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "name": "prometheus"
               },
               "editorMode": "code",
-              "expr": "max(kube_pod_container_resource_requests{pod=~\"ibm-awscw-conn-.*\", resource=\"memory\"}) ",
+              "expr": "max(kube_pod_container_resource_requests{pod=~\".*awscw-conn.*\", resource=\"memory\"}) ",
               "hide": false,
               "instant": false,
               "legendFormat": "requests ",
@@ -1252,11 +1224,10 @@
             },
             {
               "datasource": {
-                "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "name": "prometheus"
               },
               "editorMode": "code",
-              "expr": "max(kube_pod_container_resource_limits{pod=~\"ibm-awscw-conn-.*\", resource=\"memory\"}) ",
+              "expr": "max(kube_pod_container_resource_limits{pod=~\".*awscw-conn.*\", resource=\"memory\"}) ",
               "hide": false,
               "instant": false,
               "legendFormat": "limits ",
@@ -1269,8 +1240,7 @@
         },
         {
           "datasource": {
-            "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "name": "prometheus"
           },
           "description": "This panel displays the CPU usage over time of the integration pod(s). Spikes can occur during data collection, monitor these to ensure the integration is not ingesting more than it can process. Create more integrations as needed to ensure stable collection and timely processing.",
           "fieldConfig": {
@@ -1302,6 +1272,7 @@
                   "type": "linear"
                 },
                 "showPoints": "auto",
+                "showValues": false,
                 "spanNulls": false,
                 "stacking": {
                   "group": "A",
@@ -1316,7 +1287,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": 0
                   }
                 ]
               }
@@ -1370,7 +1342,7 @@
             "h": 7,
             "w": 12,
             "x": 0,
-            "y": 1149
+            "y": 11
           },
           "id": 329,
           "options": {
@@ -1384,30 +1356,29 @@
               "showLegend": true
             },
             "tooltip": {
+              "hideZeros": false,
               "mode": "multi",
               "sort": "desc"
             }
           },
-          "pluginVersion": "11.3.0",
+          "pluginVersion": "12.3.0",
           "targets": [
             {
               "datasource": {
-                "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "name": "prometheus"
               },
               "editorMode": "code",
-              "expr": "max(node_namespace_pod_container:container_cpu_usage_seconds_total:sum_irate{pod=~\"appd-conn-.*\"}) by (pod)",
+              "expr": "max(node_namespace_pod_container:container_cpu_usage_seconds_total:sum_irate{pod=~\".*appd-conn.*\"}) by (pod)",
               "legendFormat": "usage - {{pod}}",
               "range": true,
               "refId": "A"
             },
             {
               "datasource": {
-                "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "name": "prometheus"
               },
               "editorMode": "code",
-              "expr": "max(kube_pod_container_resource_requests{pod=~\"appd-conn-.*\", resource=\"cpu\"})",
+              "expr": "max(kube_pod_container_resource_requests{pod=~\".*appd-conn.*\", resource=\"cpu\"})",
               "hide": false,
               "instant": false,
               "legendFormat": "requests ",
@@ -1416,11 +1387,10 @@
             },
             {
               "datasource": {
-                "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "name": "prometheus"
               },
               "editorMode": "code",
-              "expr": "max(kube_pod_container_resource_limits{pod=~\"appd-conn-.*\", resource=\"cpu\"}) ",
+              "expr": "max(kube_pod_container_resource_limits{pod=~\".*appd-conn.*\", resource=\"cpu\"}) ",
               "hide": false,
               "instant": false,
               "legendFormat": "limits",
@@ -1433,8 +1403,7 @@
         },
         {
           "datasource": {
-            "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "name": "prometheus"
           },
           "description": "This panel displays the memory usage over time of the integration pod(s). Spikes can occur during data collection, monitor these to ensure the integration is not ingesting more than it can process. Create more integrations as needed to ensure stable collection and timely processing.",
           "fieldConfig": {
@@ -1466,6 +1435,7 @@
                   "type": "linear"
                 },
                 "showPoints": "auto",
+                "showValues": false,
                 "spanNulls": false,
                 "stacking": {
                   "group": "A",
@@ -1480,7 +1450,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": 0
                   }
                 ]
               },
@@ -1535,7 +1506,7 @@
             "h": 7,
             "w": 12,
             "x": 12,
-            "y": 1149
+            "y": 11
           },
           "id": 322,
           "options": {
@@ -1549,30 +1520,29 @@
               "showLegend": true
             },
             "tooltip": {
+              "hideZeros": false,
               "mode": "multi",
               "sort": "desc"
             }
           },
-          "pluginVersion": "11.3.0",
+          "pluginVersion": "12.3.0",
           "targets": [
             {
               "datasource": {
-                "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "name": "prometheus"
               },
               "editorMode": "code",
-              "expr": "max(container_memory_working_set_bytes{pod=~\"appd-conn-.*\", container!=\"\", container!=\"POD\"}) by (pod)",
+              "expr": "max(container_memory_working_set_bytes{pod=~\".*appd-conn.*\", container!=\"\", container!=\"POD\"}) by (pod)",
               "legendFormat": "usage - {{pod}}",
               "range": true,
               "refId": "A"
             },
             {
               "datasource": {
-                "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "name": "prometheus"
               },
               "editorMode": "code",
-              "expr": "max(kube_pod_container_resource_requests{pod=~\"appd-conn-.*\", resource=\"memory\"}) ",
+              "expr": "max(kube_pod_container_resource_requests{pod=~\".*appd-conn.*\", resource=\"memory\"}) ",
               "hide": false,
               "instant": false,
               "legendFormat": "requests ",
@@ -1581,11 +1551,10 @@
             },
             {
               "datasource": {
-                "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "name": "prometheus"
               },
               "editorMode": "code",
-              "expr": "max(kube_pod_container_resource_limits{pod=~\"appd-conn-.*\", resource=\"memory\"}) ",
+              "expr": "max(kube_pod_container_resource_limits{pod=~\".*appd-conn.*\", resource=\"memory\"}) ",
               "hide": false,
               "instant": false,
               "legendFormat": "limits ",
@@ -1598,8 +1567,7 @@
         },
         {
           "datasource": {
-            "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "name": "prometheus"
           },
           "description": "This panel displays the CPU usage over time of the integration pod(s). Spikes can occur during data collection, monitor these to ensure the integration is not ingesting more than it can process. Create more integrations as needed to ensure stable collection and timely processing.",
           "fieldConfig": {
@@ -1631,6 +1599,7 @@
                   "type": "linear"
                 },
                 "showPoints": "auto",
+                "showValues": false,
                 "spanNulls": false,
                 "stacking": {
                   "group": "A",
@@ -1645,7 +1614,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": 0
                   }
                 ]
               }
@@ -1699,7 +1669,7 @@
             "h": 7,
             "w": 12,
             "x": 0,
-            "y": 1156
+            "y": 18
           },
           "id": 328,
           "options": {
@@ -1713,30 +1683,29 @@
               "showLegend": true
             },
             "tooltip": {
+              "hideZeros": false,
               "mode": "multi",
               "sort": "desc"
             }
           },
-          "pluginVersion": "11.3.0",
+          "pluginVersion": "12.3.0",
           "targets": [
             {
               "datasource": {
-                "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "name": "prometheus"
               },
               "editorMode": "code",
-              "expr": "max(node_namespace_pod_container:container_cpu_usage_seconds_total:sum_irate{pod=~\"ibm-grpc-instana-connector-.*\"}) by (pod)",
+              "expr": "max(node_namespace_pod_container:container_cpu_usage_seconds_total:sum_irate{pod=~\".*instana-conn.*\"}) by (pod)",
               "legendFormat": "usage - {{pod}}",
               "range": true,
               "refId": "A"
             },
             {
               "datasource": {
-                "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "name": "prometheus"
               },
               "editorMode": "code",
-              "expr": "max(kube_pod_container_resource_requests{pod=~\"ibm-grpc-instana-connector-.*\", resource=\"cpu\"})",
+              "expr": "max(kube_pod_container_resource_requests{pod=~\".*instana-conn.*\", resource=\"cpu\"})",
               "hide": false,
               "instant": false,
               "legendFormat": "requests ",
@@ -1745,11 +1714,10 @@
             },
             {
               "datasource": {
-                "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "name": "prometheus"
               },
               "editorMode": "code",
-              "expr": "max(kube_pod_container_resource_limits{pod=~\"ibm-grpc-instana-connector-.*\", resource=\"cpu\"}) ",
+              "expr": "max(kube_pod_container_resource_limits{pod=~\".*instana-conn.*\", resource=\"cpu\"}) ",
               "hide": false,
               "instant": false,
               "legendFormat": "limits",
@@ -1762,8 +1730,7 @@
         },
         {
           "datasource": {
-            "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "name": "prometheus"
           },
           "description": "This panel displays the memory usage over time of the integration pod(s). Spikes can occur during data collection, monitor these to ensure the integration is not ingesting more than it can process. Create more integrations as needed to ensure stable collection and timely processing.",
           "fieldConfig": {
@@ -1795,6 +1762,7 @@
                   "type": "linear"
                 },
                 "showPoints": "auto",
+                "showValues": false,
                 "spanNulls": false,
                 "stacking": {
                   "group": "A",
@@ -1809,7 +1777,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": 0
                   }
                 ]
               },
@@ -1864,7 +1833,7 @@
             "h": 7,
             "w": 12,
             "x": 12,
-            "y": 1156
+            "y": 18
           },
           "id": 323,
           "options": {
@@ -1878,30 +1847,29 @@
               "showLegend": true
             },
             "tooltip": {
+              "hideZeros": false,
               "mode": "multi",
               "sort": "desc"
             }
           },
-          "pluginVersion": "11.3.0",
+          "pluginVersion": "12.3.0",
           "targets": [
             {
               "datasource": {
-                "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "name": "prometheus"
               },
               "editorMode": "code",
-              "expr": "max(container_memory_working_set_bytes{pod=~\"ibm-grpc-instana-connector-.*\", container!=\"\", container!=\"POD\"}) by (pod)",
+              "expr": "max(container_memory_working_set_bytes{pod=~\".*instana-conn.*\", container!=\"\", container!=\"POD\"}) by (pod)",
               "legendFormat": "usage - {{pod}}",
               "range": true,
               "refId": "A"
             },
             {
               "datasource": {
-                "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "name": "prometheus"
               },
               "editorMode": "code",
-              "expr": "max(kube_pod_container_resource_requests{pod=~\"ibm-grpc-instana-connector-.*\", resource=\"memory\"}) ",
+              "expr": "max(kube_pod_container_resource_requests{pod=~\".*instana-conn.*\", resource=\"memory\"}) ",
               "hide": false,
               "instant": false,
               "legendFormat": "requests ",
@@ -1910,11 +1878,10 @@
             },
             {
               "datasource": {
-                "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "name": "prometheus"
               },
               "editorMode": "code",
-              "expr": "max(kube_pod_container_resource_limits{pod=~\"ibm-grpc-instana-connector-.*\", resource=\"memory\"}) ",
+              "expr": "max(kube_pod_container_resource_limits{pod=~\".*instana-conn.*\", resource=\"memory\"}) ",
               "hide": false,
               "instant": false,
               "legendFormat": "limits ",
@@ -1927,8 +1894,7 @@
         },
         {
           "datasource": {
-            "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "name": "prometheus"
           },
           "description": "This panel displays the CPU usage over time of the integration pod(s). Spikes can occur during data collection, monitor these to ensure the integration is not ingesting more than it can process. Create more integrations as needed to ensure stable collection and timely processing.",
           "fieldConfig": {
@@ -1960,6 +1926,7 @@
                   "type": "linear"
                 },
                 "showPoints": "auto",
+                "showValues": false,
                 "spanNulls": false,
                 "stacking": {
                   "group": "A",
@@ -1974,7 +1941,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": 0
                   }
                 ]
               }
@@ -2028,7 +1996,7 @@
             "h": 7,
             "w": 12,
             "x": 0,
-            "y": 1163
+            "y": 25
           },
           "id": 327,
           "options": {
@@ -2042,30 +2010,29 @@
               "showLegend": true
             },
             "tooltip": {
+              "hideZeros": false,
               "mode": "multi",
               "sort": "desc"
             }
           },
-          "pluginVersion": "11.3.0",
+          "pluginVersion": "12.3.0",
           "targets": [
             {
               "datasource": {
-                "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "name": "prometheus"
               },
               "editorMode": "code",
-              "expr": "max(node_namespace_pod_container:container_cpu_usage_seconds_total:sum_irate{pod=~\"nrelic-conn-.*\"}) by (pod)",
+              "expr": "max(node_namespace_pod_container:container_cpu_usage_seconds_total:sum_irate{pod=~\".*nrelic-conn.*\"}) by (pod)",
               "legendFormat": "usage - {{pod}}",
               "range": true,
               "refId": "A"
             },
             {
               "datasource": {
-                "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "name": "prometheus"
               },
               "editorMode": "code",
-              "expr": "max(kube_pod_container_resource_requests{pod=~\"nrelic-conn-.*\", resource=\"cpu\"})",
+              "expr": "max(kube_pod_container_resource_requests{pod=~\".*nrelic-conn.*\", resource=\"cpu\"})",
               "hide": false,
               "instant": false,
               "legendFormat": "requests ",
@@ -2074,11 +2041,10 @@
             },
             {
               "datasource": {
-                "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "name": "prometheus"
               },
               "editorMode": "code",
-              "expr": "max(kube_pod_container_resource_limits{pod=~\"nrelic-conn-.*\", resource=\"cpu\"}) ",
+              "expr": "max(kube_pod_container_resource_limits{pod=~\".*nrelic-conn.*\", resource=\"cpu\"}) ",
               "hide": false,
               "instant": false,
               "legendFormat": "limits",
@@ -2091,8 +2057,7 @@
         },
         {
           "datasource": {
-            "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "name": "prometheus"
           },
           "description": "This panel displays the memory usage over time of the integration pod(s). Spikes can occur during data collection, monitor these to ensure the integration is not ingesting more than it can process. Create more integrations as needed to ensure stable collection and timely processing.",
           "fieldConfig": {
@@ -2124,6 +2089,7 @@
                   "type": "linear"
                 },
                 "showPoints": "auto",
+                "showValues": false,
                 "spanNulls": false,
                 "stacking": {
                   "group": "A",
@@ -2138,7 +2104,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": 0
                   }
                 ]
               },
@@ -2193,7 +2160,7 @@
             "h": 7,
             "w": 12,
             "x": 12,
-            "y": 1163
+            "y": 25
           },
           "id": 324,
           "options": {
@@ -2207,30 +2174,29 @@
               "showLegend": true
             },
             "tooltip": {
+              "hideZeros": false,
               "mode": "multi",
               "sort": "desc"
             }
           },
-          "pluginVersion": "11.3.0",
+          "pluginVersion": "12.3.0",
           "targets": [
             {
               "datasource": {
-                "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "name": "prometheus"
               },
               "editorMode": "code",
-              "expr": "max(container_memory_working_set_bytes{pod=~\"nrelic-conn-.*\", container!=\"\", container!=\"POD\"}) by (pod)",
+              "expr": "max(container_memory_working_set_bytes{pod=~\".*nrelic-conn.*\", container!=\"\", container!=\"POD\"}) by (pod)",
               "legendFormat": "usage - {{pod}}",
               "range": true,
               "refId": "A"
             },
             {
               "datasource": {
-                "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "name": "prometheus"
               },
               "editorMode": "code",
-              "expr": "max(kube_pod_container_resource_requests{pod=~\"nrelic-conn-.*\", resource=\"memory\"}) ",
+              "expr": "max(kube_pod_container_resource_requests{pod=~\".*nrelic-conn.*\", resource=\"memory\"}) ",
               "hide": false,
               "instant": false,
               "legendFormat": "requests ",
@@ -2239,11 +2205,10 @@
             },
             {
               "datasource": {
-                "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "name": "prometheus"
               },
               "editorMode": "code",
-              "expr": "max(kube_pod_container_resource_limits{pod=~\"nrelic-conn-.*\", resource=\"memory\"}) ",
+              "expr": "max(kube_pod_container_resource_limits{pod=~\".*nrelic-conn.*\", resource=\"memory\"}) ",
               "hide": false,
               "instant": false,
               "legendFormat": "limits ",
@@ -2256,8 +2221,7 @@
         },
         {
           "datasource": {
-            "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "name": "prometheus"
           },
           "description": "This panel displays the CPU usage over time of the integration pod(s). Spikes can occur during data collection, monitor these to ensure the integration is not ingesting more than it can process. Create more integrations as needed to ensure stable collection and timely processing.",
           "fieldConfig": {
@@ -2289,6 +2253,7 @@
                   "type": "linear"
                 },
                 "showPoints": "auto",
+                "showValues": false,
                 "spanNulls": false,
                 "stacking": {
                   "group": "A",
@@ -2303,7 +2268,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": 0
                   }
                 ]
               }
@@ -2357,7 +2323,7 @@
             "h": 7,
             "w": 12,
             "x": 0,
-            "y": 1170
+            "y": 32
           },
           "id": 326,
           "options": {
@@ -2371,30 +2337,29 @@
               "showLegend": true
             },
             "tooltip": {
+              "hideZeros": false,
               "mode": "multi",
               "sort": "desc"
             }
           },
-          "pluginVersion": "11.3.0",
+          "pluginVersion": "12.3.0",
           "targets": [
             {
               "datasource": {
-                "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "name": "prometheus"
               },
               "editorMode": "code",
-              "expr": "max(node_namespace_pod_container:container_cpu_usage_seconds_total:sum_irate{pod=~\"splunk-conn-.*\"}) by (pod)",
+              "expr": "max(node_namespace_pod_container:container_cpu_usage_seconds_total:sum_irate{pod=~\".*splunk-conn.*\"}) by (pod)",
               "legendFormat": "usage - {{pod}}",
               "range": true,
               "refId": "A"
             },
             {
               "datasource": {
-                "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "name": "prometheus"
               },
               "editorMode": "code",
-              "expr": "max(kube_pod_container_resource_requests{pod=~\"splunk-conn-.*\", resource=\"cpu\"})",
+              "expr": "max(kube_pod_container_resource_requests{pod=~\".*splunk-conn.*\", resource=\"cpu\"})",
               "hide": false,
               "instant": false,
               "legendFormat": "requests ",
@@ -2403,11 +2368,10 @@
             },
             {
               "datasource": {
-                "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "name": "prometheus"
               },
               "editorMode": "code",
-              "expr": "max(kube_pod_container_resource_limits{pod=~\"splunk-conn-.*\", resource=\"cpu\"}) ",
+              "expr": "max(kube_pod_container_resource_limits{pod=~\".*splunk-conn.*\", resource=\"cpu\"}) ",
               "hide": false,
               "instant": false,
               "legendFormat": "limits",
@@ -2420,8 +2384,7 @@
         },
         {
           "datasource": {
-            "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "name": "prometheus"
           },
           "description": "This panel displays the memory usage over time of the integration pod(s). Spikes can occur during data collection, monitor these to ensure the integration is not ingesting more than it can process. Create more integrations as needed to ensure stable collection and timely processing.",
           "fieldConfig": {
@@ -2453,6 +2416,7 @@
                   "type": "linear"
                 },
                 "showPoints": "auto",
+                "showValues": false,
                 "spanNulls": false,
                 "stacking": {
                   "group": "A",
@@ -2467,7 +2431,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": 0
                   }
                 ]
               },
@@ -2522,7 +2487,7 @@
             "h": 7,
             "w": 12,
             "x": 12,
-            "y": 1170
+            "y": 32
           },
           "id": 320,
           "options": {
@@ -2536,30 +2501,29 @@
               "showLegend": true
             },
             "tooltip": {
+              "hideZeros": false,
               "mode": "multi",
               "sort": "desc"
             }
           },
-          "pluginVersion": "11.3.0",
+          "pluginVersion": "12.3.0",
           "targets": [
             {
               "datasource": {
-                "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "name": "prometheus"
               },
               "editorMode": "code",
-              "expr": "max(container_memory_working_set_bytes{pod=~\"splunk-conn-.*\", container!=\"\", container!=\"POD\"}) by (pod)",
+              "expr": "max(container_memory_working_set_bytes{pod=~\".*splunk-conn.*\", container!=\"\", container!=\"POD\"}) by (pod)",
               "legendFormat": "usage - {{pod}}",
               "range": true,
               "refId": "A"
             },
             {
               "datasource": {
-                "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "name": "prometheus"
               },
               "editorMode": "code",
-              "expr": "max(kube_pod_container_resource_requests{pod=~\"splunk-conn-.*\", resource=\"memory\"}) ",
+              "expr": "max(kube_pod_container_resource_requests{pod=~\".*splunk-conn.*\", resource=\"memory\"}) ",
               "hide": false,
               "instant": false,
               "legendFormat": "requests ",
@@ -2568,11 +2532,10 @@
             },
             {
               "datasource": {
-                "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "name": "prometheus"
               },
               "editorMode": "code",
-              "expr": "max(kube_pod_container_resource_limits{pod=~\"splunk-conn-.*\", resource=\"memory\"}) ",
+              "expr": "max(kube_pod_container_resource_limits{pod=~\".*splunk-conn.*\", resource=\"memory\"}) ",
               "hide": false,
               "instant": false,
               "legendFormat": "limits ",
@@ -2585,8 +2548,7 @@
         },
         {
           "datasource": {
-            "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "name": "prometheus"
           },
           "description": "This panel displays the CPU usage over time of the integration pod(s). Spikes can occur during data collection, monitor these to ensure the integration is not ingesting more than it can process. Create more integrations as needed to ensure stable collection and timely processing.",
           "fieldConfig": {
@@ -2618,6 +2580,7 @@
                   "type": "linear"
                 },
                 "showPoints": "auto",
+                "showValues": false,
                 "spanNulls": false,
                 "stacking": {
                   "group": "A",
@@ -2632,7 +2595,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": 0
                   }
                 ]
               }
@@ -2686,7 +2650,7 @@
             "h": 7,
             "w": 12,
             "x": 0,
-            "y": 1177
+            "y": 39
           },
           "id": 331,
           "options": {
@@ -2700,30 +2664,29 @@
               "showLegend": true
             },
             "tooltip": {
+              "hideZeros": false,
               "mode": "multi",
               "sort": "desc"
             }
           },
-          "pluginVersion": "11.3.0",
+          "pluginVersion": "12.3.0",
           "targets": [
             {
               "datasource": {
-                "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "name": "prometheus"
               },
               "editorMode": "code",
-              "expr": "max(node_namespace_pod_container:container_cpu_usage_seconds_total:sum_irate{pod=~\"ibm-zabbix-conn-.*\"}) by (pod)",
+              "expr": "max(node_namespace_pod_container:container_cpu_usage_seconds_total:sum_irate{pod=~\".*zabbix-conn.*\"}) by (pod)",
               "legendFormat": "usage - {{pod}}",
               "range": true,
               "refId": "A"
             },
             {
               "datasource": {
-                "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "name": "prometheus"
               },
               "editorMode": "code",
-              "expr": "max(kube_pod_container_resource_requests{pod=~\"ibm-zabbix-conn-.*\", resource=\"cpu\"})",
+              "expr": "max(kube_pod_container_resource_requests{pod=~\".*zabbix-conn.*\", resource=\"cpu\"})",
               "hide": false,
               "instant": false,
               "legendFormat": "requests ",
@@ -2732,11 +2695,10 @@
             },
             {
               "datasource": {
-                "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "name": "prometheus"
               },
               "editorMode": "code",
-              "expr": "max(kube_pod_container_resource_limits{pod=~\"ibm-zabbix-conn-.*\", resource=\"cpu\"}) ",
+              "expr": "max(kube_pod_container_resource_limits{pod=~\".*zabbix-conn.*\", resource=\"cpu\"}) ",
               "hide": false,
               "instant": false,
               "legendFormat": "limits",
@@ -2749,8 +2711,7 @@
         },
         {
           "datasource": {
-            "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "name": "prometheus"
           },
           "description": "This panel displays the memory usage over time of the integration pod(s). Spikes can occur during data collection, monitor these to ensure the integration is not ingesting more than it can process. Create more integrations as needed to ensure stable collection and timely processing.",
           "fieldConfig": {
@@ -2782,6 +2743,7 @@
                   "type": "linear"
                 },
                 "showPoints": "auto",
+                "showValues": false,
                 "spanNulls": false,
                 "stacking": {
                   "group": "A",
@@ -2796,7 +2758,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": 0
                   }
                 ]
               },
@@ -2851,7 +2814,7 @@
             "h": 7,
             "w": 12,
             "x": 12,
-            "y": 1177
+            "y": 39
           },
           "id": 325,
           "options": {
@@ -2865,30 +2828,29 @@
               "showLegend": true
             },
             "tooltip": {
+              "hideZeros": false,
               "mode": "multi",
               "sort": "desc"
             }
           },
-          "pluginVersion": "11.3.0",
+          "pluginVersion": "12.3.0",
           "targets": [
             {
               "datasource": {
-                "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "name": "prometheus"
               },
               "editorMode": "code",
-              "expr": "max(container_memory_working_set_bytes{pod=~\"ibm-zabbix-conn-.*\", container!=\"\", container!=\"POD\"}) by (pod)",
+              "expr": "max(container_memory_working_set_bytes{pod=~\".*zabbix-conn.*\", container!=\"\", container!=\"POD\"}) by (pod)",
               "legendFormat": "usage - {{pod}}",
               "range": true,
               "refId": "A"
             },
             {
               "datasource": {
-                "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "name": "prometheus"
               },
               "editorMode": "code",
-              "expr": "max(kube_pod_container_resource_requests{pod=~\"ibm-zabbix-conn-.*\", resource=\"memory\"}) ",
+              "expr": "max(kube_pod_container_resource_requests{pod=~\".*zabbix-conn.*\", resource=\"memory\"}) ",
               "hide": false,
               "instant": false,
               "legendFormat": "requests ",
@@ -2897,11 +2859,10 @@
             },
             {
               "datasource": {
-                "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "name": "prometheus"
               },
               "editorMode": "code",
-              "expr": "max(kube_pod_container_resource_limits{pod=~\"ibm-zabbix-conn-.*\", resource=\"memory\"}) ",
+              "expr": "max(kube_pod_container_resource_limits{pod=~\".*zabbix-conn.*\", resource=\"memory\"}) ",
               "hide": false,
               "instant": false,
               "legendFormat": "limits ",
@@ -2917,7 +2878,7 @@
       "type": "row"
     },
     {
-      "collapsed": false,
+      "collapsed": true,
       "gridPos": {
         "h": 1,
         "w": 24,
@@ -2925,443 +2886,430 @@
         "y": 2
       },
       "id": 236,
-      "panels": [],
+      "panels": [
+        {
+          "datasource": {
+            "name": "prometheus"
+          },
+          "description": "Total number of metric messages collected within the time range across all metric integrations. Metric messages are made up of 1-x actual metrics pertaining to a particular resource. Check the \"Total Metrics Collected\" for the total number of actual metrics.",
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "thresholds"
+              },
+              "mappings": [],
+              "noValue": "No metric messages collected within time range",
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": 0
+                  }
+                ]
+              },
+              "unit": "short"
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 5,
+            "w": 5,
+            "x": 0,
+            "y": 391
+          },
+          "id": 309,
+          "options": {
+            "colorMode": "value",
+            "graphMode": "none",
+            "justifyMode": "auto",
+            "orientation": "auto",
+            "percentChangeColorMode": "standard",
+            "reduceOptions": {
+              "calcs": [
+                "lastNotNull"
+              ],
+              "fields": "",
+              "values": false
+            },
+            "showPercentChange": false,
+            "textMode": "auto",
+            "wideLayout": true
+          },
+          "pluginVersion": "12.3.0",
+          "targets": [
+            {
+              "datasource": {
+                "name": "prometheus"
+              },
+              "editorMode": "code",
+              "expr": "sum(increase(ibm_aiops_metricconnector_cloudwatch_live_metrics_data_size_objects_sum[$__range]) or vector(0)) +\nsum(increase(ibm_aiops_metricconnector_cloudwatch_historical_metrics_data_size_objects_sum[$__range]) or vector(0)) +\nsum(increase(ibm_aiops_metricconnector_appdynamics_live_metrics_data_size_objects_sum[$__range]) or vector(0)) +\nsum(increase(ibm_aiops_metricconnector_appdynamics_historical_metrics_data_size_objects_sum[$__range]) or vector(0)) +\nsum(increase(ibm_aiops_metricconnector_instana_metrics_data_size_objects_sum[$__range]) or vector(0)) +\nsum(increase(ibm_aiops_metricconnector_splunk_live_metrics_data_size_objects_sum[$__range]) or vector(0)) +\nsum(increase(ibm_aiops_metricconnector_splunk_historical_metrics_data_size_objects_sum[$__range]) or vector(0)) +\nsum(increase(ibm_aiops_metricconnector_newrelic_live_metrics_data_size_objects_sum[$__range]) or vector(0)) +\nsum(increase(ibm_aiops_metricconnector_newrelic_historical_metrics_data_size_objects_sum[$__range]) or vector(0)) +\nsum(increase(ibm_aiops_metricconnector_zabbix_live_metrics_data_size_objects_sum[$__range]) or vector(0)) +\nsum(increase(ibm_aiops_metricconnector_zabbix_historical_metrics_data_size_objects_sum[$__range]) or vector(0))",
+              "legendFormat": "{{pod}}",
+              "range": true,
+              "refId": "A"
+            }
+          ],
+          "title": "Metric messages collected ",
+          "type": "stat"
+        },
+        {
+          "datasource": {
+            "name": "prometheus"
+          },
+          "description": "Total number of metric messages collected by each integration within the time range. Metric messages are made up of 1-x actual metrics pertaining to a particular resource.",
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                }
+              },
+              "mappings": [],
+              "noValue": "No metric messages collected within time range",
+              "unit": "short"
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 10,
+            "w": 19,
+            "x": 5,
+            "y": 391
+          },
+          "id": 310,
+          "options": {
+            "displayLabels": [
+              "value"
+            ],
+            "legend": {
+              "displayMode": "table",
+              "placement": "right",
+              "showLegend": true,
+              "values": [
+                "value"
+              ]
+            },
+            "pieType": "pie",
+            "reduceOptions": {
+              "calcs": [],
+              "fields": "",
+              "values": false
+            },
+            "sort": "desc",
+            "tooltip": {
+              "hideZeros": false,
+              "mode": "multi",
+              "sort": "desc"
+            }
+          },
+          "pluginVersion": "12.3.0",
+          "targets": [
+            {
+              "datasource": {
+                "name": "prometheus"
+              },
+              "editorMode": "code",
+              "expr": "sum by (pod) (\n  (\n    increase(ibm_aiops_metricconnector_cloudwatch_live_metrics_data_size_objects_sum[$__range]) or 0 * increase(ibm_aiops_metricconnector_cloudwatch_historical_metrics_data_size_objects_sum[$__range])\n  )\n  + on(pod) group_left() (\n    increase(ibm_aiops_metricconnector_cloudwatch_historical_metrics_data_size_objects_sum[$__range]) or 0 * increase(ibm_aiops_metricconnector_cloudwatch_live_metrics_data_size_objects_sum[$__range])\n  )\n)",
+              "hide": false,
+              "instant": false,
+              "legendFormat": "{{pod}}",
+              "range": true,
+              "refId": "B"
+            },
+            {
+              "datasource": {
+                "name": "prometheus"
+              },
+              "editorMode": "code",
+              "expr": "sum by (pod) (\n  (\n    increase(ibm_aiops_metricconnector_appdynamics_live_metrics_data_size_objects_sum[$__range]) or 0 * increase(ibm_aiops_metricconnector_appdynamics_historical_metrics_data_size_objects_sum[$__range])\n  )\n  + on(pod) group_left() (\n    increase(ibm_aiops_metricconnector_appdynamics_historical_metrics_data_size_objects_sum[$__range]) or 0 * increase(ibm_aiops_metricconnector_appdynamics_live_metrics_data_size_objects_sum[$__range])\n  )\n)",
+              "hide": false,
+              "instant": false,
+              "legendFormat": "{{pod}}",
+              "range": true,
+              "refId": "D"
+            },
+            {
+              "datasource": {
+                "name": "prometheus"
+              },
+              "editorMode": "code",
+              "expr": "sum(increase(ibm_aiops_metricconnector_instana_metrics_data_size_objects_sum[$__range])) by (pod)",
+              "hide": false,
+              "instant": false,
+              "legendFormat": "{{pod}}",
+              "range": true,
+              "refId": "F"
+            },
+            {
+              "datasource": {
+                "name": "prometheus"
+              },
+              "editorMode": "code",
+              "expr": "sum by (pod) (\n  (\n    increase(ibm_aiops_metricconnector_splunk_live_metrics_data_size_objects_sum[$__range]) or 0 * increase(ibm_aiops_metricconnector_splunk_historical_metrics_data_size_objects_sum[$__range])\n  )\n  + on(pod) group_left() (\n    increase(ibm_aiops_metricconnector_splunk_historical_metrics_data_size_objects_sum[$__range]) or 0 * increase(ibm_aiops_metricconnector_splunk_live_metrics_data_size_objects_sum[$__range])\n  )\n)",
+              "hide": false,
+              "instant": false,
+              "legendFormat": "{{pod}}",
+              "range": true,
+              "refId": "G"
+            },
+            {
+              "datasource": {
+                "name": "prometheus"
+              },
+              "editorMode": "code",
+              "expr": "sum by (pod) (\n  (\n    increase(ibm_aiops_metricconnector_newrelic_live_metrics_data_size_objects_sum[$__range]) or 0 * increase(ibm_aiops_metricconnector_newrelic_historical_metrics_data_size_objects_sum[$__range])\n  )\n  + on(pod) group_left() (\n    increase(ibm_aiops_metricconnector_newrelic_historical_metrics_data_size_objects_sum[$__range]) or 0 * increase(ibm_aiops_metricconnector_newrelic_live_metrics_data_size_objects_sum[$__range])\n  )\n)",
+              "hide": false,
+              "instant": false,
+              "legendFormat": "{{pod}}",
+              "range": true,
+              "refId": "I"
+            },
+            {
+              "datasource": {
+                "name": "prometheus"
+              },
+              "editorMode": "code",
+              "expr": "sum by (pod) (\n  (\n    increase(ibm_aiops_metricconnector_zabbix_live_metrics_data_size_objects_sum[$__range]) or 0 * increase(ibm_aiops_metricconnector_zabbix_historical_metrics_data_size_objects_sum[$__range])\n  )\n  + on(pod) group_left() (\n    increase(ibm_aiops_metricconnector_zabbix_historical_metrics_data_size_objects_sum[$__range]) or 0 * increase(ibm_aiops_metricconnector_zabbix_live_metrics_data_size_objects_sum[$__range])\n  )\n)",
+              "hide": false,
+              "instant": false,
+              "legendFormat": "{{pod}}",
+              "range": true,
+              "refId": "K"
+            }
+          ],
+          "title": "Metric messages collected per integration ",
+          "type": "piechart"
+        },
+        {
+          "datasource": {
+            "name": "prometheus"
+          },
+          "description": "Total number of metric messages collected within the time range across all metric integrations. This contains the total number of individual metrics contained within all the metric messages.",
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "thresholds"
+              },
+              "mappings": [],
+              "noValue": "0",
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": 0
+                  }
+                ]
+              },
+              "unit": "short"
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 5,
+            "w": 5,
+            "x": 0,
+            "y": 423
+          },
+          "id": 332,
+          "options": {
+            "colorMode": "value",
+            "graphMode": "none",
+            "justifyMode": "auto",
+            "orientation": "auto",
+            "percentChangeColorMode": "standard",
+            "reduceOptions": {
+              "calcs": [],
+              "fields": "",
+              "values": false
+            },
+            "showPercentChange": false,
+            "textMode": "auto",
+            "wideLayout": true
+          },
+          "pluginVersion": "12.3.0",
+          "targets": [
+            {
+              "datasource": {
+                "name": "prometheus"
+              },
+              "editorMode": "code",
+              "expr": "sum(increase(kafka_server_brokertopicmetrics_messagesin_total{topic=~\"cp4waiops-cartridge.analyticsorchestrator.metrics.itsm.aggregated\"}[$__range]) or vector(0))",
+              "legendFormat": "__auto",
+              "range": true,
+              "refId": "A"
+            }
+          ],
+          "title": "Total Metrics Collected",
+          "type": "stat"
+        },
+        {
+          "datasource": {
+            "name": "prometheus"
+          },
+          "description": "Per-second rates of metric messages collected by each integration. Metric messages are made up of 1-x actual metrics pertaining to a particular resource.",
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisBorderShow": false,
+                "axisCenteredZero": false,
+                "axisColorMode": "text",
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "barWidthFactor": 0.6,
+                "drawStyle": "line",
+                "fillOpacity": 0,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "insertNulls": false,
+                "lineInterpolation": "linear",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "auto",
+                "showValues": false,
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "decimals": 0,
+              "mappings": [],
+              "noValue": "No metric messages collected within time range",
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": 0
+                  }
+                ]
+              },
+              "unit": "msgs/s"
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 7,
+            "w": 24,
+            "x": 0,
+            "y": 428
+          },
+          "id": 311,
+          "options": {
+            "legend": {
+              "calcs": [
+                "mean",
+                "max"
+              ],
+              "displayMode": "table",
+              "placement": "right",
+              "showLegend": true
+            },
+            "tooltip": {
+              "hideZeros": false,
+              "mode": "multi",
+              "sort": "desc"
+            }
+          },
+          "pluginVersion": "12.3.0",
+          "targets": [
+            {
+              "datasource": {
+                "name": "prometheus"
+              },
+              "editorMode": "code",
+              "expr": "sum by (pod) (\n  (\n    rate(ibm_aiops_metricconnector_cloudwatch_live_metrics_data_size_objects_sum[3m]) or 0 * rate(ibm_aiops_metricconnector_cloudwatch_historical_metrics_data_size_objects_sum[3m])\n  )\n  + on(pod) group_left() (\n    rate(ibm_aiops_metricconnector_cloudwatch_historical_metrics_data_size_objects_sum[3m]) or 0 * rate(ibm_aiops_metricconnector_cloudwatch_live_metrics_data_size_objects_sum[3m])\n  )\n)",
+              "legendFormat": "{{pod}}",
+              "range": true,
+              "refId": "A"
+            },
+            {
+              "datasource": {
+                "name": "prometheus"
+              },
+              "editorMode": "code",
+              "expr": "sum by (pod) (\n  (\n    rate(ibm_aiops_metricconnector_appdynamics_live_metrics_data_size_objects_sum[3m]) or 0 * rate(ibm_aiops_metricconnector_appdynamics_historical_metrics_data_size_objects_sum[3m])\n  )\n  + on(pod) group_left() (\n    rate(ibm_aiops_metricconnector_appdynamics_historical_metrics_data_size_objects_sum[3m]) or 0 * rate(ibm_aiops_metricconnector_appdynamics_live_metrics_data_size_objects_sum[3m])\n  )\n)",
+              "hide": false,
+              "instant": false,
+              "legendFormat": "{{pod}}",
+              "range": true,
+              "refId": "C"
+            },
+            {
+              "datasource": {
+                "name": "prometheus"
+              },
+              "editorMode": "code",
+              "expr": "sum(rate(ibm_aiops_metricconnector_instana_metrics_data_size_objects_sum[3m])) by (pod)",
+              "hide": false,
+              "instant": false,
+              "legendFormat": "{{pod}}",
+              "range": true,
+              "refId": "E"
+            },
+            {
+              "datasource": {
+                "name": "prometheus"
+              },
+              "editorMode": "code",
+              "expr": "sum by (pod) (\n  (\n    rate(ibm_aiops_metricconnector_splunk_live_metrics_data_size_objects_sum[3m]) or 0 * rate(ibm_aiops_metricconnector_splunk_historical_metrics_data_size_objects_sum[3m])\n  )\n  + on(pod) group_left() (\n    rate(ibm_aiops_metricconnector_splunk_historical_metrics_data_size_objects_sum[3m]) or 0 * rate(ibm_aiops_metricconnector_splunk_live_metrics_data_size_objects_sum[3m])\n  )\n)",
+              "hide": false,
+              "instant": false,
+              "legendFormat": "{{pod}}",
+              "range": true,
+              "refId": "F"
+            },
+            {
+              "datasource": {
+                "name": "prometheus"
+              },
+              "editorMode": "code",
+              "expr": "sum by (pod) (\n  (\n    rate(ibm_aiops_metricconnector_newrelic_live_metrics_data_size_objects_sum[3m]) or 0 * rate(ibm_aiops_metricconnector_newrelic_historical_metrics_data_size_objects_sum[3m])\n  )\n  + on(pod) group_left() (\n    rate(ibm_aiops_metricconnector_newrelic_historical_metrics_data_size_objects_sum[3m]) or 0 * rate(ibm_aiops_metricconnector_newrelic_live_metrics_data_size_objects_sum[3m])\n  )\n)",
+              "hide": false,
+              "instant": false,
+              "legendFormat": "{{pod}}",
+              "range": true,
+              "refId": "H"
+            },
+            {
+              "datasource": {
+                "name": "prometheus"
+              },
+              "editorMode": "code",
+              "expr": "sum by (pod) (\n  (\n    rate(ibm_aiops_metricconnector_zabbix_live_metrics_data_size_objects_sum[3m]) or 0 * rate(ibm_aiops_metricconnector_zabbix_historical_metrics_data_size_objects_sum[3m])\n  )\n  + on(pod) group_left() (\n    rate(ibm_aiops_metricconnector_zabbix_historical_metrics_data_size_objects_sum[3m]) or 0 * rate(ibm_aiops_metricconnector_zabbix_live_metrics_data_size_objects_sum[3m])\n  )\n)",
+              "hide": false,
+              "instant": false,
+              "legendFormat": "{{pod}}",
+              "range": true,
+              "refId": "J"
+            }
+          ],
+          "title": "Metric message collection rate ",
+          "type": "timeseries"
+        }
+      ],
       "title": "Total Metrics Collected",
       "type": "row"
-    },
-    {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "${DS_PROMETHEUS}"
-      },
-      "description": "Total number of metric messages collected within the time range across all metric integrations. Metric messages are made up of 1-x actual metrics pertaining to a particular resource. Check the \"Total Metrics Collected\" for the total number of actual metrics.",
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "thresholds"
-          },
-          "mappings": [],
-          "noValue": "No metric messages collected within time range",
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              }
-            ]
-          },
-          "unit": "short"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 5,
-        "w": 5,
-        "x": 0,
-        "y": 3
-      },
-      "id": 309,
-      "options": {
-        "colorMode": "value",
-        "graphMode": "none",
-        "justifyMode": "auto",
-        "orientation": "auto",
-        "percentChangeColorMode": "standard",
-        "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
-          "fields": "",
-          "values": false
-        },
-        "showPercentChange": false,
-        "textMode": "auto",
-        "wideLayout": true
-      },
-      "pluginVersion": "11.3.0",
-      "targets": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
-          },
-          "editorMode": "code",
-          "expr": "sum(increase(ibm_aiops_metricconnector_cloudwatch_live_metrics_data_size_objects_sum[$__range]) or vector(0)) +\nsum(increase(ibm_aiops_metricconnector_cloudwatch_historical_metrics_data_size_objects_sum[$__range]) or vector(0)) +\nsum(increase(ibm_aiops_metricconnector_appdynamics_live_metrics_data_size_objects_sum[$__range]) or vector(0)) +\nsum(increase(ibm_aiops_metricconnector_appdynamics_historical_metrics_data_size_objects_sum[$__range]) or vector(0)) +\nsum(increase(ibm_aiops_metricconnector_instana_metrics_data_size_objects_sum[$__range]) or vector(0)) +\nsum(increase(ibm_aiops_metricconnector_splunk_live_metrics_data_size_objects_sum[$__range]) or vector(0)) +\nsum(increase(ibm_aiops_metricconnector_splunk_historical_metrics_data_size_objects_sum[$__range]) or vector(0)) +\nsum(increase(ibm_aiops_metricconnector_newrelic_live_metrics_data_size_objects_sum[$__range]) or vector(0)) +\nsum(increase(ibm_aiops_metricconnector_newrelic_historical_metrics_data_size_objects_sum[$__range]) or vector(0)) +\nsum(increase(ibm_aiops_metricconnector_zabbix_live_metrics_data_size_objects_sum[$__range]) or vector(0)) +\nsum(increase(ibm_aiops_metricconnector_zabbix_historical_metrics_data_size_objects_sum[$__range]) or vector(0))",
-          "legendFormat": "{{pod}}",
-          "range": true,
-          "refId": "A"
-        }
-      ],
-      "title": "Metric messages collected ",
-      "type": "stat"
-    },
-    {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "${DS_PROMETHEUS}"
-      },
-      "description": "Total number of metric messages collected by each integration within the time range. Metric messages are made up of 1-x actual metrics pertaining to a particular resource.",
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            }
-          },
-          "mappings": [],
-          "noValue": "No metric messages collected within time range",
-          "unit": "short"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 10,
-        "w": 19,
-        "x": 5,
-        "y": 3
-      },
-      "id": 310,
-      "options": {
-        "displayLabels": [
-          "value"
-        ],
-        "legend": {
-          "displayMode": "table",
-          "placement": "right",
-          "showLegend": true,
-          "values": [
-            "value"
-          ]
-        },
-        "pieType": "pie",
-        "reduceOptions": {
-          "calcs": [],
-          "fields": "",
-          "values": false
-        },
-        "tooltip": {
-          "mode": "multi",
-          "sort": "desc"
-        }
-      },
-      "pluginVersion": "11.3.0",
-      "targets": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
-          },
-          "editorMode": "code",
-          "expr": "sum by (pod) (\n  (\n    increase(ibm_aiops_metricconnector_cloudwatch_live_metrics_data_size_objects_sum[$__range]) or 0 * increase(ibm_aiops_metricconnector_cloudwatch_historical_metrics_data_size_objects_sum[$__range])\n  )\n  + on(pod) group_left() (\n    increase(ibm_aiops_metricconnector_cloudwatch_historical_metrics_data_size_objects_sum[$__range]) or 0 * increase(ibm_aiops_metricconnector_cloudwatch_live_metrics_data_size_objects_sum[$__range])\n  )\n)",
-          "hide": false,
-          "instant": false,
-          "legendFormat": "{{pod}}",
-          "range": true,
-          "refId": "B"
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
-          },
-          "editorMode": "code",
-          "expr": "sum by (pod) (\n  (\n    increase(ibm_aiops_metricconnector_appdynamics_live_metrics_data_size_objects_sum[$__range]) or 0 * increase(ibm_aiops_metricconnector_appdynamics_historical_metrics_data_size_objects_sum[$__range])\n  )\n  + on(pod) group_left() (\n    increase(ibm_aiops_metricconnector_appdynamics_historical_metrics_data_size_objects_sum[$__range]) or 0 * increase(ibm_aiops_metricconnector_appdynamics_live_metrics_data_size_objects_sum[$__range])\n  )\n)",
-          "hide": false,
-          "instant": false,
-          "legendFormat": "{{pod}}",
-          "range": true,
-          "refId": "D"
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
-          },
-          "editorMode": "code",
-          "expr": "sum(increase(ibm_aiops_metricconnector_instana_metrics_data_size_objects_sum[$__range])) by (pod)",
-          "hide": false,
-          "instant": false,
-          "legendFormat": "{{pod}}",
-          "range": true,
-          "refId": "F"
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
-          },
-          "editorMode": "code",
-          "expr": "sum by (pod) (\n  (\n    increase(ibm_aiops_metricconnector_splunk_live_metrics_data_size_objects_sum[$__range]) or 0 * increase(ibm_aiops_metricconnector_splunk_historical_metrics_data_size_objects_sum[$__range])\n  )\n  + on(pod) group_left() (\n    increase(ibm_aiops_metricconnector_splunk_historical_metrics_data_size_objects_sum[$__range]) or 0 * increase(ibm_aiops_metricconnector_splunk_live_metrics_data_size_objects_sum[$__range])\n  )\n)",
-          "hide": false,
-          "instant": false,
-          "legendFormat": "{{pod}}",
-          "range": true,
-          "refId": "G"
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
-          },
-          "editorMode": "code",
-          "expr": "sum by (pod) (\n  (\n    increase(ibm_aiops_metricconnector_newrelic_live_metrics_data_size_objects_sum[$__range]) or 0 * increase(ibm_aiops_metricconnector_newrelic_historical_metrics_data_size_objects_sum[$__range])\n  )\n  + on(pod) group_left() (\n    increase(ibm_aiops_metricconnector_newrelic_historical_metrics_data_size_objects_sum[$__range]) or 0 * increase(ibm_aiops_metricconnector_newrelic_live_metrics_data_size_objects_sum[$__range])\n  )\n)",
-          "hide": false,
-          "instant": false,
-          "legendFormat": "{{pod}}",
-          "range": true,
-          "refId": "I"
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
-          },
-          "editorMode": "code",
-          "expr": "sum by (pod) (\n  (\n    increase(ibm_aiops_metricconnector_zabbix_live_metrics_data_size_objects_sum[$__range]) or 0 * increase(ibm_aiops_metricconnector_zabbix_historical_metrics_data_size_objects_sum[$__range])\n  )\n  + on(pod) group_left() (\n    increase(ibm_aiops_metricconnector_zabbix_historical_metrics_data_size_objects_sum[$__range]) or 0 * increase(ibm_aiops_metricconnector_zabbix_live_metrics_data_size_objects_sum[$__range])\n  )\n)",
-          "hide": false,
-          "instant": false,
-          "legendFormat": "{{pod}}",
-          "range": true,
-          "refId": "K"
-        }
-      ],
-      "title": "Metric messages collected per integration ",
-      "type": "piechart"
-    },
-    {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "${DS_PROMETHEUS}"
-      },
-      "description": "Total number of metric messages collected within the time range across all metric integrations. This contains the total number of individual metrics contained within all the metric messages.",
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "thresholds"
-          },
-          "mappings": [],
-          "noValue": "0",
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              }
-            ]
-          },
-          "unit": "short"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 5,
-        "w": 5,
-        "x": 0,
-        "y": 8
-      },
-      "id": 332,
-      "options": {
-        "colorMode": "value",
-        "graphMode": "none",
-        "justifyMode": "auto",
-        "orientation": "auto",
-        "percentChangeColorMode": "standard",
-        "reduceOptions": {
-          "calcs": [],
-          "fields": "",
-          "values": false
-        },
-        "showPercentChange": false,
-        "textMode": "auto",
-        "wideLayout": true
-      },
-      "pluginVersion": "11.3.0",
-      "targets": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
-          },
-          "editorMode": "code",
-          "expr": "sum(increase(kafka_server_brokertopicmetrics_messagesin_total{topic=~\"cp4waiops-cartridge.analyticsorchestrator.metrics.itsm.aggregated\"}[$__range]) or vector(0))",
-          "legendFormat": "__auto",
-          "range": true,
-          "refId": "A"
-        }
-      ],
-      "title": "Total Metrics Collected",
-      "type": "stat"
-    },
-    {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "${DS_PROMETHEUS}"
-      },
-      "description": "Per-second rates of metric messages collected by each integration. Metric messages are made up of 1-x actual metrics pertaining to a particular resource.",
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisBorderShow": false,
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
-            "axisLabel": "",
-            "axisPlacement": "auto",
-            "barAlignment": 0,
-            "barWidthFactor": 0.6,
-            "drawStyle": "line",
-            "fillOpacity": 0,
-            "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "insertNulls": false,
-            "lineInterpolation": "linear",
-            "lineWidth": 1,
-            "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "auto",
-            "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
-          },
-          "decimals": 0,
-          "mappings": [],
-          "noValue": "No metric messages collected within time range",
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              }
-            ]
-          },
-          "unit": "msgs/s"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 7,
-        "w": 24,
-        "x": 0,
-        "y": 13
-      },
-      "id": 311,
-      "options": {
-        "legend": {
-          "calcs": [
-            "mean",
-            "max"
-          ],
-          "displayMode": "table",
-          "placement": "right",
-          "showLegend": true
-        },
-        "tooltip": {
-          "mode": "multi",
-          "sort": "desc"
-        }
-      },
-      "pluginVersion": "11.3.0",
-      "targets": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
-          },
-          "editorMode": "code",
-          "expr": "sum by (pod) (\n  (\n    rate(ibm_aiops_metricconnector_cloudwatch_live_metrics_data_size_objects_sum[3m]) or 0 * rate(ibm_aiops_metricconnector_cloudwatch_historical_metrics_data_size_objects_sum[3m])\n  )\n  + on(pod) group_left() (\n    rate(ibm_aiops_metricconnector_cloudwatch_historical_metrics_data_size_objects_sum[3m]) or 0 * rate(ibm_aiops_metricconnector_cloudwatch_live_metrics_data_size_objects_sum[3m])\n  )\n)",
-          "legendFormat": "{{pod}}",
-          "range": true,
-          "refId": "A"
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
-          },
-          "editorMode": "code",
-          "expr": "sum by (pod) (\n  (\n    rate(ibm_aiops_metricconnector_appdynamics_live_metrics_data_size_objects_sum[3m]) or 0 * rate(ibm_aiops_metricconnector_appdynamics_historical_metrics_data_size_objects_sum[3m])\n  )\n  + on(pod) group_left() (\n    rate(ibm_aiops_metricconnector_appdynamics_historical_metrics_data_size_objects_sum[3m]) or 0 * rate(ibm_aiops_metricconnector_appdynamics_live_metrics_data_size_objects_sum[3m])\n  )\n)",
-          "hide": false,
-          "instant": false,
-          "legendFormat": "{{pod}}",
-          "range": true,
-          "refId": "C"
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
-          },
-          "editorMode": "code",
-          "expr": "sum(rate(ibm_aiops_metricconnector_instana_metrics_data_size_objects_sum[3m])) by (pod)",
-          "hide": false,
-          "instant": false,
-          "legendFormat": "{{pod}}",
-          "range": true,
-          "refId": "E"
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
-          },
-          "editorMode": "code",
-          "expr": "sum by (pod) (\n  (\n    rate(ibm_aiops_metricconnector_splunk_live_metrics_data_size_objects_sum[3m]) or 0 * rate(ibm_aiops_metricconnector_splunk_historical_metrics_data_size_objects_sum[3m])\n  )\n  + on(pod) group_left() (\n    rate(ibm_aiops_metricconnector_splunk_historical_metrics_data_size_objects_sum[3m]) or 0 * rate(ibm_aiops_metricconnector_splunk_live_metrics_data_size_objects_sum[3m])\n  )\n)",
-          "hide": false,
-          "instant": false,
-          "legendFormat": "{{pod}}",
-          "range": true,
-          "refId": "F"
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
-          },
-          "editorMode": "code",
-          "expr": "sum by (pod) (\n  (\n    rate(ibm_aiops_metricconnector_newrelic_live_metrics_data_size_objects_sum[3m]) or 0 * rate(ibm_aiops_metricconnector_newrelic_historical_metrics_data_size_objects_sum[3m])\n  )\n  + on(pod) group_left() (\n    rate(ibm_aiops_metricconnector_newrelic_historical_metrics_data_size_objects_sum[3m]) or 0 * rate(ibm_aiops_metricconnector_newrelic_live_metrics_data_size_objects_sum[3m])\n  )\n)",
-          "hide": false,
-          "instant": false,
-          "legendFormat": "{{pod}}",
-          "range": true,
-          "refId": "H"
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
-          },
-          "editorMode": "code",
-          "expr": "sum by (pod) (\n  (\n    rate(ibm_aiops_metricconnector_zabbix_live_metrics_data_size_objects_sum[3m]) or 0 * rate(ibm_aiops_metricconnector_zabbix_historical_metrics_data_size_objects_sum[3m])\n  )\n  + on(pod) group_left() (\n    rate(ibm_aiops_metricconnector_zabbix_historical_metrics_data_size_objects_sum[3m]) or 0 * rate(ibm_aiops_metricconnector_zabbix_live_metrics_data_size_objects_sum[3m])\n  )\n)",
-          "hide": false,
-          "instant": false,
-          "legendFormat": "{{pod}}",
-          "range": true,
-          "refId": "J"
-        }
-      ],
-      "title": "Metric message collection rate ",
-      "type": "timeseries"
     },
     {
       "collapsed": true,
@@ -3369,14 +3317,13 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 20
+        "y": 3
       },
       "id": 211,
       "panels": [
         {
           "datasource": {
-            "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "name": "prometheus"
           },
           "description": "Number of collections conducted within the time range.",
           "fieldConfig": {
@@ -3401,7 +3348,7 @@
             "h": 3,
             "w": 2,
             "x": 0,
-            "y": 126
+            "y": 1394
           },
           "id": 255,
           "options": {
@@ -3423,8 +3370,7 @@
           "targets": [
             {
               "datasource": {
-                "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "name": "prometheus"
               },
               "editorMode": "code",
               "expr": "sum(increase(ibm_aiops_metricconnector_appdynamics_historical_metrics_run_count_total[$__range]) or vector(0)) + sum(increase(ibm_aiops_metricconnector_appdynamics_live_metrics_run_count_total[$__range]))or vector(0)",
@@ -3438,8 +3384,7 @@
         },
         {
           "datasource": {
-            "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "name": "prometheus"
           },
           "description": "Number of collections that resulted in an error within the time range. Errors will end the current collection, but will not impact future collections from happening. The subsequent collection after an error will proceed as scheduled.",
           "fieldConfig": {
@@ -3468,7 +3413,7 @@
             "h": 3,
             "w": 2,
             "x": 2,
-            "y": 126
+            "y": 1394
           },
           "id": 238,
           "options": {
@@ -3490,8 +3435,7 @@
           "targets": [
             {
               "datasource": {
-                "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "name": "prometheus"
               },
               "editorMode": "code",
               "expr": "sum(increase(ibm_aiops_metricconnector_appdynamics_historical_metrics_error_count_total[$__range]) or vector(0)) +\nsum(increase(ibm_aiops_metricconnector_appdynamics_live_metrics_error_count_total[$__range]) or vector(0))",
@@ -3505,8 +3449,7 @@
         },
         {
           "datasource": {
-            "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "name": "prometheus"
           },
           "description": "Number of collections that were interrupted within the time range. Interruptions are more severe than errors and will prevent any further collections. Review the component pods for error logs.",
           "fieldConfig": {
@@ -3535,7 +3478,7 @@
             "h": 3,
             "w": 2,
             "x": 4,
-            "y": 126
+            "y": 1394
           },
           "id": 239,
           "options": {
@@ -3557,8 +3500,7 @@
           "targets": [
             {
               "datasource": {
-                "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "name": "prometheus"
               },
               "editorMode": "code",
               "expr": "sum(increase(ibm_aiops_metricconnector_appdynamics_historical_metrics_interrupted_count_total[$__range]) or vector(0)) +\nsum(increase(ibm_aiops_metricconnector_appdynamics_live_metrics_interrupted_count_total[$__range]) or vector(0))",
@@ -3572,8 +3514,7 @@
         },
         {
           "datasource": {
-            "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "name": "prometheus"
           },
           "description": "Total number of metric messages collected within the time range per integration.",
           "fieldConfig": {
@@ -3598,7 +3539,7 @@
             "h": 9,
             "w": 9,
             "x": 6,
-            "y": 126
+            "y": 1394
           },
           "id": 299,
           "options": {
@@ -3625,8 +3566,7 @@
           "targets": [
             {
               "datasource": {
-                "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "name": "prometheus"
               },
               "editorMode": "code",
               "expr": "sum by (pod) (\n  (\n    increase(ibm_aiops_metricconnector_appdynamics_live_metrics_data_size_objects_sum[$__range]) or 0 * increase(ibm_aiops_metricconnector_appdynamics_historical_metrics_data_size_objects_sum[$__range])\n  )\n  + on(pod) group_left() (\n    increase(ibm_aiops_metricconnector_appdynamics_historical_metrics_data_size_objects_sum[$__range]) or 0 * increase(ibm_aiops_metricconnector_appdynamics_live_metrics_data_size_objects_sum[$__range])\n  )\n)",
@@ -3640,8 +3580,7 @@
         },
         {
           "datasource": {
-            "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "name": "prometheus"
           },
           "description": "Per-second rates of metric messages collected by each integration.",
           "fieldConfig": {
@@ -3699,7 +3638,7 @@
             "h": 9,
             "w": 9,
             "x": 15,
-            "y": 126
+            "y": 1394
           },
           "id": 296,
           "options": {
@@ -3718,8 +3657,7 @@
           "targets": [
             {
               "datasource": {
-                "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "name": "prometheus"
               },
               "editorMode": "code",
               "expr": "sum by (pod) (\n  (\n    rate(ibm_aiops_metricconnector_appdynamics_live_metrics_data_size_objects_sum[3m]) or 0 * rate(ibm_aiops_metricconnector_appdynamics_historical_metrics_data_size_objects_sum[3m])\n  )\n  + on(pod) group_left() (\n    rate(ibm_aiops_metricconnector_appdynamics_historical_metrics_data_size_objects_sum[3m]) or 0 * rate(ibm_aiops_metricconnector_appdynamics_live_metrics_data_size_objects_sum[3m])\n  )\n)",
@@ -3733,8 +3671,7 @@
         },
         {
           "datasource": {
-            "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "name": "prometheus"
           },
           "description": "Total number of metric messages collected within the time range.",
           "fieldConfig": {
@@ -3759,7 +3696,7 @@
             "h": 6,
             "w": 6,
             "x": 0,
-            "y": 219
+            "y": 1487
           },
           "id": 240,
           "options": {
@@ -3783,8 +3720,7 @@
           "targets": [
             {
               "datasource": {
-                "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "name": "prometheus"
               },
               "editorMode": "code",
               "expr": "sum(increase(ibm_aiops_metricconnector_appdynamics_historical_metrics_data_size_objects_sum[$__range]) or vector(0)) +\nsum(increase(ibm_aiops_metricconnector_appdynamics_live_metrics_data_size_objects_sum[$__range]) or vector(0))",
@@ -3806,14 +3742,13 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 21
+        "y": 4
       },
       "id": 212,
       "panels": [
         {
           "datasource": {
-            "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "name": "prometheus"
           },
           "description": "Number of collections conducted within the time range.",
           "fieldConfig": {
@@ -3838,7 +3773,7 @@
             "h": 3,
             "w": 2,
             "x": 0,
-            "y": 127
+            "y": 1395
           },
           "id": 267,
           "options": {
@@ -3860,8 +3795,7 @@
           "targets": [
             {
               "datasource": {
-                "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "name": "prometheus"
               },
               "editorMode": "code",
               "expr": "sum(increase(ibm_aiops_metricconnector_cloudwatch_historical_metrics_run_count_total[$__range]) or vector(0)) + sum(increase(ibm_aiops_metricconnector_cloudwatch_live_metrics_run_count_total[$__range]))or vector(0)",
@@ -3875,8 +3809,7 @@
         },
         {
           "datasource": {
-            "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "name": "prometheus"
           },
           "description": "Number of collections that resulted in an error within the time range. Errors will end the current collection, but will not impact future collections from happening. The subsequent collection after an error will proceed as scheduled.",
           "fieldConfig": {
@@ -3905,7 +3838,7 @@
             "h": 3,
             "w": 2,
             "x": 2,
-            "y": 127
+            "y": 1395
           },
           "id": 268,
           "options": {
@@ -3927,8 +3860,7 @@
           "targets": [
             {
               "datasource": {
-                "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "name": "prometheus"
               },
               "editorMode": "code",
               "expr": "sum(increase(ibm_aiops_metricconnector_cloudwatch_historical_metrics_error_count_total[$__range]) or vector(0)) +\nsum(increase(ibm_aiops_metricconnector_cloudwatch_live_metrics_error_count_total[$__range]) or vector(0))",
@@ -3942,8 +3874,7 @@
         },
         {
           "datasource": {
-            "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "name": "prometheus"
           },
           "description": "Number of collections that were interrupted within the time range. Interruptions are more severe than errors and will prevent any further collections. Review the component pods for error logs.",
           "fieldConfig": {
@@ -3972,7 +3903,7 @@
             "h": 3,
             "w": 2,
             "x": 4,
-            "y": 127
+            "y": 1395
           },
           "id": 269,
           "options": {
@@ -3994,8 +3925,7 @@
           "targets": [
             {
               "datasource": {
-                "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "name": "prometheus"
               },
               "editorMode": "code",
               "expr": "sum(increase(ibm_aiops_metricconnector_cloudwatch_historical_metrics_interrupted_count_total[$__range]) or vector(0)) +\nsum(increase(ibm_aiops_metricconnector_cloudwatch_live_metrics_interrupted_count_total[$__range]) or vector(0))",
@@ -4009,8 +3939,7 @@
         },
         {
           "datasource": {
-            "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "name": "prometheus"
           },
           "description": "Total number of metric messages collected within the time range per integration.",
           "fieldConfig": {
@@ -4034,7 +3963,7 @@
             "h": 9,
             "w": 9,
             "x": 6,
-            "y": 127
+            "y": 1395
           },
           "id": 271,
           "options": {
@@ -4061,8 +3990,7 @@
           "targets": [
             {
               "datasource": {
-                "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "name": "prometheus"
               },
               "editorMode": "code",
               "expr": "sum by (pod) (\n  (\n    increase(ibm_aiops_metricconnector_cloudwatch_live_metrics_data_size_objects_sum[$__range]) or 0 * increase(ibm_aiops_metricconnector_cloudwatch_historical_metrics_data_size_objects_sum[$__range])\n  )\n  + on(pod) group_left() (\n    increase(ibm_aiops_metricconnector_cloudwatch_historical_metrics_data_size_objects_sum[$__range]) or 0 * increase(ibm_aiops_metricconnector_cloudwatch_live_metrics_data_size_objects_sum[$__range])\n  )\n)",
@@ -4076,8 +4004,7 @@
         },
         {
           "datasource": {
-            "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "name": "prometheus"
           },
           "description": "Per-second rates of metric messages collected by each integration.",
           "fieldConfig": {
@@ -4136,7 +4063,7 @@
             "h": 9,
             "w": 9,
             "x": 15,
-            "y": 127
+            "y": 1395
           },
           "id": 272,
           "options": {
@@ -4155,8 +4082,7 @@
           "targets": [
             {
               "datasource": {
-                "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "name": "prometheus"
               },
               "editorMode": "code",
               "expr": "sum by (pod) (\n  (\n    rate(ibm_aiops_metricconnector_cloudwatch_live_metrics_data_size_objects_sum[3m]) or 0 * rate(ibm_aiops_metricconnector_cloudwatch_historical_metrics_data_size_objects_sum[3m])\n  )\n  + on(pod) group_left() (\n    rate(ibm_aiops_metricconnector_cloudwatch_historical_metrics_data_size_objects_sum[3m]) or 0 * rate(ibm_aiops_metricconnector_cloudwatch_live_metrics_data_size_objects_sum[3m])\n  )\n)",
@@ -4170,8 +4096,7 @@
         },
         {
           "datasource": {
-            "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "name": "prometheus"
           },
           "description": "Total number of metric messages collected within the time range.",
           "fieldConfig": {
@@ -4196,7 +4121,7 @@
             "h": 6,
             "w": 6,
             "x": 0,
-            "y": 130
+            "y": 1398
           },
           "id": 270,
           "options": {
@@ -4220,8 +4145,7 @@
           "targets": [
             {
               "datasource": {
-                "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "name": "prometheus"
               },
               "editorMode": "code",
               "expr": "sum(increase(ibm_aiops_metricconnector_cloudwatch_historical_metrics_data_size_objects_sum[$__range]) or vector(0)) +\nsum(increase(ibm_aiops_metricconnector_cloudwatch_live_metrics_data_size_objects_sum[$__range]) or vector(0))",
@@ -4243,14 +4167,13 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 22
+        "y": 5
       },
       "id": 214,
       "panels": [
         {
           "datasource": {
-            "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "name": "prometheus"
           },
           "description": "Number of collections conducted within the time range.",
           "fieldConfig": {
@@ -4264,7 +4187,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": 0
                   }
                 ]
               }
@@ -4275,7 +4199,7 @@
             "h": 3,
             "w": 2,
             "x": 0,
-            "y": 67
+            "y": 130
           },
           "id": 218,
           "options": {
@@ -4293,12 +4217,11 @@
             "textMode": "auto",
             "wideLayout": true
           },
-          "pluginVersion": "11.3.0",
+          "pluginVersion": "12.3.0",
           "targets": [
             {
               "datasource": {
-                "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "name": "prometheus"
               },
               "editorMode": "code",
               "expr": "sum(increase(ibm_aiops_metricconnector_instana_metrics_run_count_total[$__range]))",
@@ -4312,8 +4235,7 @@
         },
         {
           "datasource": {
-            "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "name": "prometheus"
           },
           "description": "Number of collections that resulted in an error within the time range. Errors will end the current collection, but will not impact future collections from happening. The subsequent collection after an error will proceed as scheduled.",
           "fieldConfig": {
@@ -4327,7 +4249,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": 0
                   },
                   {
                     "color": "yellow",
@@ -4342,7 +4265,7 @@
             "h": 3,
             "w": 2,
             "x": 2,
-            "y": 67
+            "y": 130
           },
           "id": 231,
           "options": {
@@ -4360,12 +4283,11 @@
             "textMode": "auto",
             "wideLayout": true
           },
-          "pluginVersion": "11.3.0",
+          "pluginVersion": "12.3.0",
           "targets": [
             {
               "datasource": {
-                "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "name": "prometheus"
               },
               "editorMode": "code",
               "expr": "sum(increase(ibm_aiops_metricconnector_instana_metrics_error_count_total[$__range]))",
@@ -4379,8 +4301,7 @@
         },
         {
           "datasource": {
-            "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "name": "prometheus"
           },
           "description": "Number of collections that were interrupted within the time range. Interruptions are more severe than errors and will prevent any further collections. Review the component pods for error logs.",
           "fieldConfig": {
@@ -4394,7 +4315,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": 0
                   },
                   {
                     "color": "red",
@@ -4409,7 +4331,7 @@
             "h": 3,
             "w": 2,
             "x": 4,
-            "y": 67
+            "y": 130
           },
           "id": 232,
           "options": {
@@ -4427,12 +4349,11 @@
             "textMode": "auto",
             "wideLayout": true
           },
-          "pluginVersion": "11.3.0",
+          "pluginVersion": "12.3.0",
           "targets": [
             {
               "datasource": {
-                "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "name": "prometheus"
               },
               "editorMode": "code",
               "expr": "sum(increase(ibm_aiops_metricconnector_instana_interuptted_count_total[$__range]))",
@@ -4446,8 +4367,7 @@
         },
         {
           "datasource": {
-            "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "name": "prometheus"
           },
           "description": "Total number of metric messages collected within the time range per integration.",
           "fieldConfig": {
@@ -4471,7 +4391,7 @@
             "h": 9,
             "w": 9,
             "x": 6,
-            "y": 67
+            "y": 130
           },
           "id": 234,
           "options": {
@@ -4489,17 +4409,18 @@
               "fields": "",
               "values": false
             },
+            "sort": "desc",
             "tooltip": {
+              "hideZeros": false,
               "mode": "multi",
               "sort": "desc"
             }
           },
-          "pluginVersion": "11.3.0",
+          "pluginVersion": "12.3.0",
           "targets": [
             {
               "datasource": {
-                "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "name": "prometheus"
               },
               "editorMode": "code",
               "expr": "sum(increase(ibm_aiops_metricconnector_instana_metrics_data_size_objects_sum[$__range])) by (pod)",
@@ -4513,8 +4434,7 @@
         },
         {
           "datasource": {
-            "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "name": "prometheus"
           },
           "description": "Per-second rates of metric messages collected by each integration.",
           "fieldConfig": {
@@ -4546,6 +4466,7 @@
                   "type": "linear"
                 },
                 "showPoints": "auto",
+                "showValues": false,
                 "spanNulls": false,
                 "stacking": {
                   "group": "A",
@@ -4561,7 +4482,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": 0
                   }
                 ]
               },
@@ -4573,7 +4495,7 @@
             "h": 9,
             "w": 9,
             "x": 15,
-            "y": 67
+            "y": 130
           },
           "id": 235,
           "options": {
@@ -4584,16 +4506,16 @@
               "showLegend": true
             },
             "tooltip": {
+              "hideZeros": false,
               "mode": "multi",
               "sort": "desc"
             }
           },
-          "pluginVersion": "11.3.0",
+          "pluginVersion": "12.3.0",
           "targets": [
             {
               "datasource": {
-                "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "name": "prometheus"
               },
               "editorMode": "code",
               "expr": "sum(rate(ibm_aiops_metricconnector_instana_metrics_data_size_objects_sum[3m])) by (pod)",
@@ -4607,8 +4529,7 @@
         },
         {
           "datasource": {
-            "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "name": "prometheus"
           },
           "description": "Total number of metric messages collected within the time range.",
           "fieldConfig": {
@@ -4621,7 +4542,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": 0
                   }
                 ]
               },
@@ -4633,7 +4555,7 @@
             "h": 6,
             "w": 6,
             "x": 0,
-            "y": 88
+            "y": 133
           },
           "id": 233,
           "options": {
@@ -4653,12 +4575,11 @@
             "textMode": "auto",
             "wideLayout": true
           },
-          "pluginVersion": "11.3.0",
+          "pluginVersion": "12.3.0",
           "targets": [
             {
               "datasource": {
-                "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "name": "prometheus"
               },
               "editorMode": "code",
               "expr": "sum(increase(ibm_aiops_metricconnector_instana_metrics_data_size_objects_sum[$__range]))",
@@ -4680,14 +4601,13 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 23
+        "y": 6
       },
       "id": 215,
       "panels": [
         {
           "datasource": {
-            "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "name": "prometheus"
           },
           "description": "Number of collections conducted within the time range.",
           "fieldConfig": {
@@ -4701,7 +4621,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": 0
                   }
                 ]
               }
@@ -4712,7 +4633,7 @@
             "h": 3,
             "w": 2,
             "x": 0,
-            "y": 68
+            "y": 140
           },
           "id": 237,
           "options": {
@@ -4730,12 +4651,11 @@
             "textMode": "auto",
             "wideLayout": true
           },
-          "pluginVersion": "11.3.0",
+          "pluginVersion": "12.3.0",
           "targets": [
             {
               "datasource": {
-                "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "name": "prometheus"
               },
               "editorMode": "code",
               "expr": "sum(increase(ibm_aiops_metricconnector_newrelic_historical_metrics_run_count_total[$__range]) or vector(0)) + sum(increase(ibm_aiops_metricconnector_newrelic_live_metrics_run_count_total[$__range]))or vector(0)",
@@ -4749,8 +4669,7 @@
         },
         {
           "datasource": {
-            "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "name": "prometheus"
           },
           "description": "Number of collections that resulted in an error within the time range. Errors will end the current collection, but will not impact future collections from happening. The subsequent collection after an error will proceed as scheduled.",
           "fieldConfig": {
@@ -4764,7 +4683,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": 0
                   },
                   {
                     "color": "yellow",
@@ -4779,7 +4699,7 @@
             "h": 3,
             "w": 2,
             "x": 2,
-            "y": 68
+            "y": 140
           },
           "id": 256,
           "options": {
@@ -4797,12 +4717,11 @@
             "textMode": "auto",
             "wideLayout": true
           },
-          "pluginVersion": "11.3.0",
+          "pluginVersion": "12.3.0",
           "targets": [
             {
               "datasource": {
-                "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "name": "prometheus"
               },
               "editorMode": "code",
               "expr": "sum(increase(ibm_aiops_metricconnector_newrelic_historical_metrics_error_count_total[$__range]) or vector(0)) +\nsum(increase(ibm_aiops_metricconnector_newrelic_live_metrics_error_count_total[$__range]) or vector(0))",
@@ -4816,8 +4735,7 @@
         },
         {
           "datasource": {
-            "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "name": "prometheus"
           },
           "description": "Number of collections that were interrupted within the time range. Interruptions are more severe than errors and will prevent any further collections. Review the component pods for error logs.",
           "fieldConfig": {
@@ -4831,7 +4749,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": 0
                   },
                   {
                     "color": "red",
@@ -4846,7 +4765,7 @@
             "h": 3,
             "w": 2,
             "x": 4,
-            "y": 68
+            "y": 140
           },
           "id": 257,
           "options": {
@@ -4864,12 +4783,11 @@
             "textMode": "auto",
             "wideLayout": true
           },
-          "pluginVersion": "11.3.0",
+          "pluginVersion": "12.3.0",
           "targets": [
             {
               "datasource": {
-                "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "name": "prometheus"
               },
               "editorMode": "code",
               "expr": "sum(increase(ibm_aiops_metricconnector_newrelic_historical_metrics_interrupted_count_total[$__range]) or vector(0)) +\nsum(increase(ibm_aiops_metricconnector_newrelic_live_metrics_interrupted_count_total[$__range]) or vector(0))",
@@ -4883,8 +4801,7 @@
         },
         {
           "datasource": {
-            "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "name": "prometheus"
           },
           "description": "Total number of metric messages collected within the time range per integration.",
           "fieldConfig": {
@@ -4908,7 +4825,7 @@
             "h": 9,
             "w": 9,
             "x": 6,
-            "y": 68
+            "y": 140
           },
           "id": 259,
           "options": {
@@ -4926,17 +4843,18 @@
               "fields": "",
               "values": false
             },
+            "sort": "desc",
             "tooltip": {
+              "hideZeros": false,
               "mode": "multi",
               "sort": "desc"
             }
           },
-          "pluginVersion": "11.3.0",
+          "pluginVersion": "12.3.0",
           "targets": [
             {
               "datasource": {
-                "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "name": "prometheus"
               },
               "editorMode": "code",
               "expr": "sum by (pod) (\n  (\n    increase(ibm_aiops_metricconnector_newrelic_live_metrics_data_size_objects_sum[$__range]) or 0 * increase(ibm_aiops_metricconnector_newrelic_historical_metrics_data_size_objects_sum[$__range])\n  )\n  + on(pod) group_left() (\n    increase(ibm_aiops_metricconnector_newrelic_historical_metrics_data_size_objects_sum[$__range]) or 0 * increase(ibm_aiops_metricconnector_newrelic_live_metrics_data_size_objects_sum[$__range])\n  )\n)",
@@ -4950,8 +4868,7 @@
         },
         {
           "datasource": {
-            "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "name": "prometheus"
           },
           "description": "Per-second rates of metric messages collected by each integration.",
           "fieldConfig": {
@@ -4983,6 +4900,7 @@
                   "type": "linear"
                 },
                 "showPoints": "auto",
+                "showValues": false,
                 "spanNulls": false,
                 "stacking": {
                   "group": "A",
@@ -4998,7 +4916,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": 0
                   }
                 ]
               },
@@ -5010,7 +4929,7 @@
             "h": 9,
             "w": 9,
             "x": 15,
-            "y": 68
+            "y": 140
           },
           "id": 260,
           "options": {
@@ -5021,16 +4940,16 @@
               "showLegend": true
             },
             "tooltip": {
+              "hideZeros": false,
               "mode": "multi",
               "sort": "desc"
             }
           },
-          "pluginVersion": "11.3.0",
+          "pluginVersion": "12.3.0",
           "targets": [
             {
               "datasource": {
-                "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "name": "prometheus"
               },
               "editorMode": "code",
               "expr": "sum by (pod) (\n  (\n    rate(ibm_aiops_metricconnector_newrelic_live_metrics_data_size_objects_sum[3m]) or 0 * rate(ibm_aiops_metricconnector_newrelic_historical_metrics_data_size_objects_sum[3m])\n  )\n  + on(pod) group_left() (\n    rate(ibm_aiops_metricconnector_newrelic_historical_metrics_data_size_objects_sum[3m]) or 0 * rate(ibm_aiops_metricconnector_newrelic_live_metrics_data_size_objects_sum[3m])\n  )\n)",
@@ -5044,8 +4963,7 @@
         },
         {
           "datasource": {
-            "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "name": "prometheus"
           },
           "description": "Total number of metric messages collected within the time range.",
           "fieldConfig": {
@@ -5058,7 +4976,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": 0
                   }
                 ]
               },
@@ -5070,7 +4989,7 @@
             "h": 6,
             "w": 6,
             "x": 0,
-            "y": 71
+            "y": 143
           },
           "id": 258,
           "options": {
@@ -5090,12 +5009,11 @@
             "textMode": "auto",
             "wideLayout": true
           },
-          "pluginVersion": "11.3.0",
+          "pluginVersion": "12.3.0",
           "targets": [
             {
               "datasource": {
-                "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "name": "prometheus"
               },
               "editorMode": "code",
               "expr": "sum(increase(ibm_aiops_metricconnector_newrelic_historical_metrics_data_size_objects_sum[$__range]) or vector(0)) +\nsum(increase(ibm_aiops_metricconnector_newrelic_live_metrics_data_size_objects_sum[$__range]) or vector(0))",
@@ -5117,14 +5035,13 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 24
+        "y": 7
       },
       "id": 216,
       "panels": [
         {
           "datasource": {
-            "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "name": "prometheus"
           },
           "description": "Number of collections conducted within the time range.",
           "fieldConfig": {
@@ -5138,7 +5055,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": 0
                   }
                 ]
               }
@@ -5149,7 +5067,7 @@
             "h": 3,
             "w": 2,
             "x": 0,
-            "y": 78
+            "y": 150
           },
           "id": 249,
           "options": {
@@ -5167,12 +5085,11 @@
             "textMode": "auto",
             "wideLayout": true
           },
-          "pluginVersion": "11.3.0",
+          "pluginVersion": "12.3.0",
           "targets": [
             {
               "datasource": {
-                "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "name": "prometheus"
               },
               "editorMode": "code",
               "expr": "sum(increase(ibm_aiops_metricconnector_splunk_historical_metrics_run_count_total[$__range]) or vector(0)) + sum(increase(ibm_aiops_metricconnector_splunk_live_metrics_run_count_total[$__range]))or vector(0)",
@@ -5186,8 +5103,7 @@
         },
         {
           "datasource": {
-            "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "name": "prometheus"
           },
           "description": "Number of collections that resulted in an error within the time range. Errors will end the current collection, but will not impact future collections from happening. The subsequent collection after an error will proceed as scheduled.",
           "fieldConfig": {
@@ -5201,7 +5117,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": 0
                   },
                   {
                     "color": "yellow",
@@ -5216,7 +5133,7 @@
             "h": 3,
             "w": 2,
             "x": 2,
-            "y": 78
+            "y": 150
           },
           "id": 250,
           "options": {
@@ -5234,12 +5151,11 @@
             "textMode": "auto",
             "wideLayout": true
           },
-          "pluginVersion": "11.3.0",
+          "pluginVersion": "12.3.0",
           "targets": [
             {
               "datasource": {
-                "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "name": "prometheus"
               },
               "editorMode": "code",
               "expr": "sum(increase(ibm_aiops_metricconnector_splunk_historical_metrics_error_count_total[$__range]) or vector(0)) +\nsum(increase(ibm_aiops_metricconnector_splunk_live_metrics_error_count_total[$__range]) or vector(0))",
@@ -5253,8 +5169,7 @@
         },
         {
           "datasource": {
-            "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "name": "prometheus"
           },
           "description": "Number of collections that were interrupted within the time range. Interruptions are more severe than errors and will prevent any further collections. Review the component pods for error logs.",
           "fieldConfig": {
@@ -5268,7 +5183,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": 0
                   },
                   {
                     "color": "red",
@@ -5283,7 +5199,7 @@
             "h": 3,
             "w": 2,
             "x": 4,
-            "y": 78
+            "y": 150
           },
           "id": 251,
           "options": {
@@ -5301,12 +5217,11 @@
             "textMode": "auto",
             "wideLayout": true
           },
-          "pluginVersion": "11.3.0",
+          "pluginVersion": "12.3.0",
           "targets": [
             {
               "datasource": {
-                "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "name": "prometheus"
               },
               "editorMode": "code",
               "expr": "sum(increase(ibm_aiops_metricconnector_splunk_historical_metrics_interrupted_count_total[$__range]) or vector(0)) +\nsum(increase(ibm_aiops_metricconnector_splunk_live_metrics_interrupted_count_total[$__range]) or vector(0))",
@@ -5320,8 +5235,7 @@
         },
         {
           "datasource": {
-            "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "name": "prometheus"
           },
           "description": "Total number of metric messages collected within the time range per integration.",
           "fieldConfig": {
@@ -5345,7 +5259,7 @@
             "h": 9,
             "w": 9,
             "x": 6,
-            "y": 78
+            "y": 150
           },
           "id": 253,
           "options": {
@@ -5363,17 +5277,18 @@
               "fields": "",
               "values": false
             },
+            "sort": "desc",
             "tooltip": {
+              "hideZeros": false,
               "mode": "multi",
               "sort": "desc"
             }
           },
-          "pluginVersion": "11.3.0",
+          "pluginVersion": "12.3.0",
           "targets": [
             {
               "datasource": {
-                "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "name": "prometheus"
               },
               "editorMode": "code",
               "expr": "sum by (pod) (\n  (\n    increase(ibm_aiops_metricconnector_splunk_live_metrics_data_size_objects_sum[$__range]) or 0 * increase(ibm_aiops_metricconnector_splunk_historical_metrics_data_size_objects_sum[$__range])\n  )\n  + on(pod) group_left() (\n    increase(ibm_aiops_metricconnector_splunk_historical_metrics_data_size_objects_sum[$__range]) or 0 * increase (ibm_aiops_metricconnector_splunk_live_metrics_data_size_objects_sum[$__range])\n  )\n)",
@@ -5387,8 +5302,7 @@
         },
         {
           "datasource": {
-            "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "name": "prometheus"
           },
           "description": "Per-second rates of metric messages collected by each integration.",
           "fieldConfig": {
@@ -5420,6 +5334,7 @@
                   "type": "linear"
                 },
                 "showPoints": "auto",
+                "showValues": false,
                 "spanNulls": false,
                 "stacking": {
                   "group": "A",
@@ -5435,7 +5350,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": 0
                   }
                 ]
               },
@@ -5447,7 +5363,7 @@
             "h": 9,
             "w": 9,
             "x": 15,
-            "y": 78
+            "y": 150
           },
           "id": 254,
           "options": {
@@ -5458,16 +5374,16 @@
               "showLegend": true
             },
             "tooltip": {
+              "hideZeros": false,
               "mode": "multi",
               "sort": "desc"
             }
           },
-          "pluginVersion": "11.3.0",
+          "pluginVersion": "12.3.0",
           "targets": [
             {
               "datasource": {
-                "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "name": "prometheus"
               },
               "editorMode": "code",
               "expr": "sum by (pod) (\n  (\n    rate(ibm_aiops_metricconnector_splunk_live_metrics_data_size_objects_sum[3m]) or 0 * rate(ibm_aiops_metricconnector_splunk_historical_metrics_data_size_objects_sum[3m])\n  )\n  + on(pod) group_left() (\n    rate(ibm_aiops_metricconnector_splunk_historical_metrics_data_size_objects_sum[3m]) or 0 * rate(ibm_aiops_metricconnector_splunk_live_metrics_data_size_objects_sum[3m])\n  )\n)",
@@ -5481,8 +5397,7 @@
         },
         {
           "datasource": {
-            "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "name": "prometheus"
           },
           "description": "Total number of metric messages collected within the time range.",
           "fieldConfig": {
@@ -5495,7 +5410,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": 0
                   }
                 ]
               },
@@ -5507,7 +5423,7 @@
             "h": 6,
             "w": 6,
             "x": 0,
-            "y": 81
+            "y": 153
           },
           "id": 252,
           "options": {
@@ -5527,12 +5443,11 @@
             "textMode": "auto",
             "wideLayout": true
           },
-          "pluginVersion": "11.3.0",
+          "pluginVersion": "12.3.0",
           "targets": [
             {
               "datasource": {
-                "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "name": "prometheus"
               },
               "editorMode": "code",
               "expr": "sum(increase(ibm_aiops_metricconnector_splunk_historical_metrics_data_size_objects_sum[$__range]) or vector(0)) +\nsum(increase(ibm_aiops_metricconnector_splunk_live_metrics_data_size_objects_sum[$__range]) or vector(0))",
@@ -5554,14 +5469,13 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 25
+        "y": 8
       },
       "id": 217,
       "panels": [
         {
           "datasource": {
-            "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "name": "prometheus"
           },
           "description": "Number of collections conducted within the time range.",
           "fieldConfig": {
@@ -5575,7 +5489,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": 0
                   }
                 ]
               }
@@ -5586,7 +5501,7 @@
             "h": 3,
             "w": 2,
             "x": 0,
-            "y": 131
+            "y": 160
           },
           "id": 243,
           "options": {
@@ -5604,12 +5519,11 @@
             "textMode": "auto",
             "wideLayout": true
           },
-          "pluginVersion": "11.3.0",
+          "pluginVersion": "12.3.0",
           "targets": [
             {
               "datasource": {
-                "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "name": "prometheus"
               },
               "editorMode": "code",
               "expr": "sum(increase(ibm_aiops_metricconnector_zabbix_historical_metrics_run_count_total[$__range]) or vector(0)) + sum(increase(ibm_aiops_metricconnector_zabbix_live_metrics_run_count_total[$__range]))or vector(0)",
@@ -5623,8 +5537,7 @@
         },
         {
           "datasource": {
-            "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "name": "prometheus"
           },
           "description": "Number of collections that resulted in an error within the time range. Errors will end the current collection, but will not impact future collections from happening. The subsequent collection after an error will proceed as scheduled.",
           "fieldConfig": {
@@ -5638,7 +5551,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": 0
                   },
                   {
                     "color": "yellow",
@@ -5653,7 +5567,7 @@
             "h": 3,
             "w": 2,
             "x": 2,
-            "y": 131
+            "y": 160
           },
           "id": 244,
           "options": {
@@ -5671,12 +5585,11 @@
             "textMode": "auto",
             "wideLayout": true
           },
-          "pluginVersion": "11.3.0",
+          "pluginVersion": "12.3.0",
           "targets": [
             {
               "datasource": {
-                "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "name": "prometheus"
               },
               "editorMode": "code",
               "expr": "sum(increase(ibm_aiops_metricconnector_zabbix_historical_metrics_error_count_total[$__range]) or vector(0)) +\nsum(increase(ibm_aiops_metricconnector_zabbix_live_metrics_error_count_total[$__range]) or vector(0))",
@@ -5690,8 +5603,7 @@
         },
         {
           "datasource": {
-            "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "name": "prometheus"
           },
           "description": "Number of collections that were interrupted within the time range. Interruptions are more severe than errors and will prevent any further collections. Review the component pods for error logs.",
           "fieldConfig": {
@@ -5705,7 +5617,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": 0
                   },
                   {
                     "color": "red",
@@ -5720,7 +5633,7 @@
             "h": 3,
             "w": 2,
             "x": 4,
-            "y": 131
+            "y": 160
           },
           "id": 245,
           "options": {
@@ -5738,12 +5651,11 @@
             "textMode": "auto",
             "wideLayout": true
           },
-          "pluginVersion": "11.3.0",
+          "pluginVersion": "12.3.0",
           "targets": [
             {
               "datasource": {
-                "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "name": "prometheus"
               },
               "editorMode": "code",
               "expr": "sum(increase(ibm_aiops_metricconnector_zabbix_historical_metrics_interrupted_count_total[$__range]) or vector(0)) +\nsum(increase(ibm_aiops_metricconnector_zabbix_live_metrics_interrupted_count_total[$__range]) or vector(0))",
@@ -5757,8 +5669,7 @@
         },
         {
           "datasource": {
-            "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "name": "prometheus"
           },
           "description": "Total number of metric messages collected within the time range per integration.",
           "fieldConfig": {
@@ -5782,7 +5693,7 @@
             "h": 9,
             "w": 9,
             "x": 6,
-            "y": 131
+            "y": 160
           },
           "id": 247,
           "options": {
@@ -5800,17 +5711,18 @@
               "fields": "",
               "values": false
             },
+            "sort": "desc",
             "tooltip": {
+              "hideZeros": false,
               "mode": "multi",
               "sort": "desc"
             }
           },
-          "pluginVersion": "11.3.0",
+          "pluginVersion": "12.3.0",
           "targets": [
             {
               "datasource": {
-                "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "name": "prometheus"
               },
               "editorMode": "code",
               "expr": "sum by (pod) (\n  (\n    increase(ibm_aiops_metricconnector_zabbix_live_metrics_data_size_objects_sum[$__range]) or 0 * increase(ibm_aiops_metricconnector_zabbix_historical_metrics_data_size_objects_sum[$__range])\n  )\n  + on(pod) group_left() (\n    increase(ibm_aiops_metricconnector_zabbix_historical_metrics_data_size_objects_sum[$__range]) or 0 * increase(ibm_aiops_metricconnector_zabbix_live_metrics_data_size_objects_sum[$__range])\n  )\n)",
@@ -5824,8 +5736,7 @@
         },
         {
           "datasource": {
-            "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "name": "prometheus"
           },
           "description": "Per-second rates of metric messages collected by each integration.",
           "fieldConfig": {
@@ -5857,6 +5768,7 @@
                   "type": "linear"
                 },
                 "showPoints": "auto",
+                "showValues": false,
                 "spanNulls": false,
                 "stacking": {
                   "group": "A",
@@ -5872,7 +5784,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": 0
                   }
                 ]
               },
@@ -5884,7 +5797,7 @@
             "h": 9,
             "w": 9,
             "x": 15,
-            "y": 131
+            "y": 160
           },
           "id": 248,
           "options": {
@@ -5895,16 +5808,16 @@
               "showLegend": true
             },
             "tooltip": {
+              "hideZeros": false,
               "mode": "multi",
               "sort": "desc"
             }
           },
-          "pluginVersion": "11.3.0",
+          "pluginVersion": "12.3.0",
           "targets": [
             {
               "datasource": {
-                "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "name": "prometheus"
               },
               "editorMode": "code",
               "expr": "sum by (pod) (\n  (\n    rate(ibm_aiops_metricconnector_zabbix_live_metrics_data_size_objects_sum[3m]) or 0 * rate(ibm_aiops_metricconnector_zabbix_historical_metrics_data_size_objects_sum[3m])\n  )\n  + on(pod) group_left() (\n    rate(ibm_aiops_metricconnector_zabbix_historical_metrics_data_size_objects_sum[3m]) or 0 * rate(ibm_aiops_metricconnector_zabbix_live_metrics_data_size_objects_sum[3m])\n  )\n)",
@@ -5918,8 +5831,7 @@
         },
         {
           "datasource": {
-            "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "name": "prometheus"
           },
           "description": "Total number of metric messages collected within the time range.",
           "fieldConfig": {
@@ -5932,7 +5844,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": 0
                   }
                 ]
               },
@@ -5944,7 +5857,7 @@
             "h": 6,
             "w": 6,
             "x": 0,
-            "y": 134
+            "y": 163
           },
           "id": 246,
           "options": {
@@ -5964,12 +5877,11 @@
             "textMode": "auto",
             "wideLayout": true
           },
-          "pluginVersion": "11.3.0",
+          "pluginVersion": "12.3.0",
           "targets": [
             {
               "datasource": {
-                "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "name": "prometheus"
               },
               "editorMode": "code",
               "expr": "sum(increase(ibm_aiops_metricconnector_zabbix_historical_metrics_data_size_objects_sum[$__range]) or vector(0)) +\nsum(increase(ibm_aiops_metricconnector_zabbix_live_metrics_data_size_objects_sum[$__range]) or vector(0))",
@@ -5986,19 +5898,21 @@
       "type": "row"
     }
   ],
-  "schemaVersion": 40,
+  "preload": false,
+  "schemaVersion": 42,
   "tags": [],
   "templating": {
     "list": []
   },
   "time": {
-    "from": "now-6h",
+    "from": "now-30m",
     "to": "now"
   },
   "timepicker": {},
   "timezone": "browser",
   "title": "IBM Cloud Pak for AIOps Component - Metric Integrations",
   "uid": "712d9a40-d89a-4546-8060-cfc58c293734",
-  "version": 2,
-  "weekStart": ""
+  "version": 8,
+  "weekStart": "",
+  "id": null
 }

@@ -1,14 +1,4 @@
 {
-  "__inputs": [
-    {
-      "name": "DS_PROMETHEUS",
-      "label": "prometheus",
-      "description": "",
-      "type": "datasource",
-      "pluginId": "prometheus",
-      "pluginName": "Prometheus"
-    }
-  ],
   "__elements": {},
   "__requires": [
     {
@@ -21,7 +11,7 @@
       "type": "grafana",
       "id": "grafana",
       "name": "Grafana",
-      "version": "12.1.0"
+      "version": "12.3.0"
     },
     {
       "type": "datasource",
@@ -73,7 +63,6 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
-  "id": null,
   "links": [],
   "panels": [
     {
@@ -107,138 +96,57 @@
             "content": "# Web UI Component Overview\n\nThe IBM Cloud Pak for AIOps web UI is built out of the following sub-components:\n- aiops-base-ui: AIOps Home page UI\n- aiops-akora-ui: AIOps Core UI (Incident/Alert Management, Topology/Policies UI & RBA) \n- aiops-connections-ui: AIOps Integrations UI\n- aiops-model-ui: AIOps Model Management Page\n- aiops-insights-ui: AIOps Insights ",
             "mode": "markdown"
           },
-          "pluginVersion": "12.1.0",
+          "pluginVersion": "12.3.0",
           "title": "",
           "type": "text"
         },
         {
           "datasource": {
-            "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "name": "prometheus"
           },
-          "description": "Count that tracks the number of pods that were newly created within the time range.\n\nNew pods indicate restarts may have occurred which could result in loss of functionality. Review the pod uptime time graph to see if any gaps in uptime occurred.\n\nNew pods don't always indicate a problem and in some cases are part of routine processing and scaling. ",
+          "description": "The 5 lowest uptimes within the component pods. Pod restarts can impact functionality, review the pod table and uptime graph for more details.",
           "fieldConfig": {
             "defaults": {
               "color": {
                 "mode": "thresholds"
               },
-              "mappings": [
-                {
-                  "options": {
-                    "0": {
-                      "color": "dark-green",
-                      "index": 0,
-                      "text": "pods are stable - no new pods within time range"
-                    },
-                    "1": {
-                      "color": "semi-dark-green",
-                      "index": 1,
-                      "text": "1 new pod within time range - review uptime graph for gaps"
-                    },
-                    "2": {
-                      "color": "green",
-                      "index": 2,
-                      "text": "2 new pods within time range - review uptime graph for gaps"
-                    },
-                    "3": {
-                      "color": "light-green",
-                      "index": 3,
-                      "text": "3 new pods within time range - review uptime graph for gaps"
-                    },
-                    "4": {
-                      "color": "super-light-green",
-                      "index": 4,
-                      "text": "4 new pods within time range - review uptime graph for gaps"
-                    },
-                    "5": {
-                      "color": "super-light-green",
-                      "index": 5,
-                      "text": "5 new pods within time range - review uptime graph for gaps"
-                    },
-                    "6": {
-                      "color": "super-light-yellow",
-                      "index": 6,
-                      "text": "6 new pods within time range - review uptime graph for gaps"
-                    },
-                    "7": {
-                      "color": "super-light-yellow",
-                      "index": 7,
-                      "text": "7 new pods within time range - review uptime graph for gaps"
-                    },
-                    "8": {
-                      "color": "light-yellow",
-                      "index": 8,
-                      "text": "8 new pods within time range - review uptime graph for gaps"
-                    },
-                    "9": {
-                      "color": "light-yellow",
-                      "index": 9,
-                      "text": "9 new pods within time range - review uptime graph for gaps"
-                    }
-                  },
-                  "type": "value"
-                },
-                {
-                  "options": {
-                    "from": 10,
-                    "result": {
-                      "color": "yellow",
-                      "index": 10,
-                      "text": "10-20 new pods within time range - review uptime graph for gaps"
-                    },
-                    "to": 20
-                  },
-                  "type": "range"
-                },
-                {
-                  "options": {
-                    "from": 21,
-                    "result": {
-                      "color": "light-red",
-                      "index": 11,
-                      "text": "21-40 new pods within time range - review uptime graph for gaps"
-                    },
-                    "to": 40
-                  },
-                  "type": "range"
-                },
-                {
-                  "options": {
-                    "from": 41,
-                    "result": {
-                      "color": "red",
-                      "index": 12,
-                      "text": "41+ new pods within time range - review uptime graph for gaps"
-                    },
-                    "to": 10000
-                  },
-                  "type": "range"
-                }
-              ],
-              "noValue": "pods are stable - no new pods within time range",
+              "mappings": [],
               "thresholds": {
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "dark-green",
+                    "color": "red",
                     "value": 0
+                  },
+                  {
+                    "color": "#EAB839",
+                    "value": 3600
+                  },
+                  {
+                    "color": "super-light-yellow",
+                    "value": 43200
+                  },
+                  {
+                    "color": "green",
+                    "value": 86400
                   }
                 ]
-              }
+              },
+              "unit": "s"
             },
             "overrides": []
           },
           "gridPos": {
-            "h": 1,
+            "h": 3,
             "w": 24,
             "x": 0,
-            "y": 435
+            "y": 8
           },
-          "id": 68,
+          "id": 126,
           "options": {
             "colorMode": "background_solid",
             "graphMode": "none",
-            "justifyMode": "center",
+            "justifyMode": "auto",
             "orientation": "auto",
             "percentChangeColorMode": "standard",
             "reduceOptions": {
@@ -250,32 +158,31 @@
             },
             "showPercentChange": false,
             "text": {
+              "titleSize": 16,
               "valueSize": 20
             },
-            "textMode": "value",
+            "textMode": "auto",
             "wideLayout": true
           },
-          "pluginVersion": "12.1.0",
+          "pluginVersion": "12.3.0",
           "targets": [
             {
               "datasource": {
-                "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "name": "prometheus"
               },
               "editorMode": "code",
-              "expr": "sum(((sum((time() - kube_pod_start_time{pod=~\"aiops-base-ui.*|aiops-akora-ui.*|aiops-ai-model-ui.*|aiops-connections-ui-.*|aiops-insights-ui-.*\"}) - $__range_s) by (pod)) < 60) <= bool 0)",
+              "expr": "time() -topk(5, sum(kube_pod_start_time{pod=~\"aiops-base-ui.*|aiops-akora-ui.*|aiops-ai-model-ui.*|aiops-connections-ui-.*|aiops-insights-ui-.*\"}) by (pod))",
               "legendFormat": "__auto",
               "range": true,
               "refId": "A"
             }
           ],
-          "title": "",
+          "title": "Lowest Pod Uptimes",
           "type": "stat"
         },
         {
           "datasource": {
-            "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "name": "prometheus"
           },
           "description": "",
           "fieldConfig": {
@@ -286,10 +193,13 @@
               "custom": {
                 "align": "auto",
                 "cellOptions": {
-                  "type": "auto",
-                  "wrapText": true
+                  "type": "auto"
                 },
-                "inspect": false
+                "footer": {
+                  "reducers": []
+                },
+                "inspect": false,
+                "wrapText": true
               },
               "mappings": [],
               "thresholds": {
@@ -308,29 +218,20 @@
             "h": 8,
             "w": 9,
             "x": 0,
-            "y": 436
+            "y": 11
           },
           "id": 47,
           "options": {
             "cellHeight": "sm",
-            "footer": {
-              "countRows": false,
-              "enablePagination": false,
-              "fields": "",
-              "reducer": [
-                "sum"
-              ],
-              "show": false
-            },
+            "enablePagination": false,
             "showHeader": true,
             "sortBy": []
           },
-          "pluginVersion": "12.1.0",
+          "pluginVersion": "12.3.0",
           "targets": [
             {
               "datasource": {
-                "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "name": "prometheus"
               },
               "disableTextWrap": false,
               "editorMode": "code",
@@ -395,8 +296,7 @@
         },
         {
           "datasource": {
-            "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "name": "prometheus"
           },
           "description": "Pod Uptimes for web UI component pods",
           "fieldConfig": {
@@ -428,6 +328,7 @@
                   "type": "linear"
                 },
                 "showPoints": "auto",
+                "showValues": false,
                 "spanNulls": false,
                 "stacking": {
                   "group": "A",
@@ -455,7 +356,7 @@
             "h": 8,
             "w": 15,
             "x": 9,
-            "y": 436
+            "y": 11
           },
           "id": 42,
           "options": {
@@ -471,12 +372,11 @@
               "sort": "desc"
             }
           },
-          "pluginVersion": "12.1.0",
+          "pluginVersion": "12.3.0",
           "targets": [
             {
               "datasource": {
-                "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "name": "prometheus"
               },
               "editorMode": "code",
               "expr": "time() - kube_pod_start_time{pod=~\"aiops-base-ui.*|aiops-akora-ui.*|aiops-ai-model-ui.*|aiops-connections-ui-.*|aiops-insights-ui-.*\"}",
@@ -504,8 +404,7 @@
       "panels": [
         {
           "datasource": {
-            "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "name": "prometheus"
           },
           "description": "Count of pods that have exceeded 80% of their CPU limits within the time range. This will result in CPU throttling and potentially temporary loss of functionality\n\nThis will only compare against the ***current*** CPU limit of each pod. If the limits were updated within the time range, the count may be inaccurate.",
           "fieldConfig": {
@@ -573,7 +472,7 @@
             "h": 1,
             "w": 12,
             "x": 0,
-            "y": 445
+            "y": 888
           },
           "id": 69,
           "options": {
@@ -600,8 +499,7 @@
           "targets": [
             {
               "datasource": {
-                "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "name": "prometheus"
               },
               "editorMode": "code",
               "expr": "sum((((max(kube_pod_container_resource_limits{pod=~\"aiops-base-ui.*|aiops-akora-ui.*|aiops-ai-model-ui.*|aiops-connections-ui-.*|aiops-insights-ui-.*\", container!=\"\", container!=\"POD\", resource=\"cpu\"}) by (pod)) * 0.8 <= max(max_over_time(node_namespace_pod_container:container_cpu_usage_seconds_total:sum_irate{pod=~\"aiops-base-ui.*|aiops-akora-ui.*|aiops-ai-model-ui.*|aiops-connections-ui-.*|aiops-insights-ui-.*\", container!=\"\", container!=\"POD\"}[$__range])) by (pod)) or vector(0)) > bool 0)",
@@ -615,8 +513,7 @@
         },
         {
           "datasource": {
-            "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "name": "prometheus"
           },
           "description": "Count of pods that have exceeded 80% of their memory limits within the time range.\n\nThis will only compare against the ***current*** memory limit of each pod. If the limits were updated within the time range, the count may be inaccurate.",
           "fieldConfig": {
@@ -684,7 +581,7 @@
             "h": 1,
             "w": 12,
             "x": 12,
-            "y": 445
+            "y": 888
           },
           "id": 71,
           "options": {
@@ -711,8 +608,7 @@
           "targets": [
             {
               "datasource": {
-                "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "name": "prometheus"
               },
               "editorMode": "code",
               "expr": "sum((((max(kube_pod_container_resource_limits{pod=~\"aiops-base-ui.*|aiops-akora-ui.*|aiops-ai-model-ui.*|aiops-connections-ui-.*|aiops-insights-ui-.*\", container!=\"\", container!=\"POD\", resource=\"memory\"}) by (pod)) * 0.8 <= max(max_over_time(container_memory_working_set_bytes{pod=~\"aiops-base-ui.*|aiops-akora-ui.*|aiops-ai-model-ui.*|aiops-connections-ui-.*|aiops-insights-ui-.*\", container!=\"\", container!=\"POD\", container!=\"\"}[$__range])) by (pod)) or vector(0)) > bool 0)",
@@ -726,8 +622,7 @@
         },
         {
           "datasource": {
-            "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "name": "prometheus"
           },
           "description": "Count of pods that have exceeded their CPU limits within the time range. This will result in CPU throttling and potentially temporary loss of functionality.\n\nThis will only compare against the ***current*** CPU limit of each pod. If the limits were updated within the time range, the count may be inaccurate.",
           "fieldConfig": {
@@ -795,7 +690,7 @@
             "h": 1,
             "w": 12,
             "x": 0,
-            "y": 446
+            "y": 889
           },
           "id": 70,
           "options": {
@@ -822,8 +717,7 @@
           "targets": [
             {
               "datasource": {
-                "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "name": "prometheus"
               },
               "editorMode": "code",
               "expr": "sum((((max(kube_pod_container_resource_limits{pod=~\"aiops-base-ui.*|aiops-akora-ui.*|aiops-ai-model-ui.*|aiops-connections-ui-.*|aiops-insights-ui-.*\", container!=\"\", container!=\"POD\", resource=\"cpu\"}) by (pod)) <= max(max_over_time(node_namespace_pod_container:container_cpu_usage_seconds_total:sum_irate{pod=~\"aiops-base-ui.*|aiops-akora-ui.*|aiops-ai-model-ui.*|aiops-connections-ui-.*|aiops-insights-ui-.*\", container!=\"\", container!=\"POD\"}[$__range])) by (pod)) or vector(0)) > bool 0)",
@@ -837,8 +731,7 @@
         },
         {
           "datasource": {
-            "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "name": "prometheus"
           },
           "description": "Count of component pods that have exceeded their memory limits within the time range.\n\nThis will only compare against the ***current*** memory limit of each pod. If the limits were updated within the time range, the count may be inaccurate.",
           "fieldConfig": {
@@ -905,7 +798,7 @@
             "h": 1,
             "w": 12,
             "x": 12,
-            "y": 446
+            "y": 889
           },
           "id": 72,
           "options": {
@@ -932,8 +825,7 @@
           "targets": [
             {
               "datasource": {
-                "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "name": "prometheus"
               },
               "editorMode": "code",
               "expr": "sum((((max(kube_pod_container_resource_limits{pod=~\"aiops-base-ui.*|aiops-akora-ui.*|aiops-ai-model-ui.*|aiops-connections-ui-.*|aiops-insights-ui-.*\", container!=\"\", container!=\"POD\", resource=\"memory\"}) by (pod)) <= max(max_over_time(container_memory_working_set_bytes{pod=~\"aiops-base-ui.*|aiops-akora-ui.*|aiops-ai-model-ui.*|aiops-connections-ui-.*|aiops-insights-ui-.*\", container!=\"\", container!=\"POD\", container!=\"\"}[$__range])) by (pod)) or vector(0)) > bool 0)",
@@ -947,8 +839,7 @@
         },
         {
           "datasource": {
-            "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "name": "prometheus"
           },
           "fieldConfig": {
             "defaults": {
@@ -1058,7 +949,7 @@
             "h": 8,
             "w": 12,
             "x": 0,
-            "y": 447
+            "y": 890
           },
           "id": 29,
           "options": {
@@ -1081,8 +972,7 @@
           "targets": [
             {
               "datasource": {
-                "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "name": "prometheus"
               },
               "editorMode": "code",
               "expr": "max(node_namespace_pod_container:container_cpu_usage_seconds_total:sum_irate{pod=~\"aiops-base-ui.*\"}) by (pod)",
@@ -1092,8 +982,7 @@
             },
             {
               "datasource": {
-                "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "name": "prometheus"
               },
               "editorMode": "code",
               "expr": "max(kube_pod_container_resource_requests{pod=~\"aiops-base-ui.*\", resource=\"cpu\"})",
@@ -1105,8 +994,7 @@
             },
             {
               "datasource": {
-                "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "name": "prometheus"
               },
               "editorMode": "code",
               "expr": "max(kube_pod_container_resource_limits{pod=~\"aiops-base-ui.*\", resource=\"cpu\"})",
@@ -1122,8 +1010,7 @@
         },
         {
           "datasource": {
-            "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "name": "prometheus"
           },
           "fieldConfig": {
             "defaults": {
@@ -1233,7 +1120,7 @@
             "h": 8,
             "w": 12,
             "x": 12,
-            "y": 447
+            "y": 890
           },
           "id": 31,
           "options": {
@@ -1256,8 +1143,7 @@
           "targets": [
             {
               "datasource": {
-                "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "name": "prometheus"
               },
               "editorMode": "code",
               "expr": "max(container_memory_working_set_bytes{pod=~\"aiops-base-ui.*\", container!=\"\"}) by (pod)",
@@ -1267,8 +1153,7 @@
             },
             {
               "datasource": {
-                "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "name": "prometheus"
               },
               "editorMode": "code",
               "expr": "max(kube_pod_container_resource_requests{pod=~\"aiops-base-ui.*\", resource=\"memory\"})",
@@ -1280,8 +1165,7 @@
             },
             {
               "datasource": {
-                "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "name": "prometheus"
               },
               "editorMode": "code",
               "expr": "max(kube_pod_container_resource_limits{pod=~\"aiops-base-ui.*\", resource=\"memory\"})",
@@ -1297,8 +1181,7 @@
         },
         {
           "datasource": {
-            "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "name": "prometheus"
           },
           "fieldConfig": {
             "defaults": {
@@ -1408,7 +1291,7 @@
             "h": 8,
             "w": 12,
             "x": 0,
-            "y": 455
+            "y": 898
           },
           "id": 33,
           "options": {
@@ -1431,8 +1314,7 @@
           "targets": [
             {
               "datasource": {
-                "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "name": "prometheus"
               },
               "editorMode": "code",
               "expr": "max(node_namespace_pod_container:container_cpu_usage_seconds_total:sum_irate{pod=~\"aiops-akora-ui.*\"})",
@@ -1442,8 +1324,7 @@
             },
             {
               "datasource": {
-                "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "name": "prometheus"
               },
               "editorMode": "code",
               "expr": "max(kube_pod_container_resource_requests{pod=~\"aiops-akora-ui.*\", resource=\"cpu\"}) by (pod)",
@@ -1455,8 +1336,7 @@
             },
             {
               "datasource": {
-                "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "name": "prometheus"
               },
               "editorMode": "code",
               "expr": "max(kube_pod_container_resource_limits{pod=~\"aiops-akora-ui.*\", resource=\"cpu\"})",
@@ -1472,8 +1352,7 @@
         },
         {
           "datasource": {
-            "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "name": "prometheus"
           },
           "fieldConfig": {
             "defaults": {
@@ -1583,7 +1462,7 @@
             "h": 8,
             "w": 12,
             "x": 12,
-            "y": 455
+            "y": 898
           },
           "id": 35,
           "options": {
@@ -1606,8 +1485,7 @@
           "targets": [
             {
               "datasource": {
-                "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "name": "prometheus"
               },
               "editorMode": "code",
               "expr": "max(container_memory_working_set_bytes{pod=~\"aiops-akora-ui.*\", container!=\"\"}) by (pod)",
@@ -1617,8 +1495,7 @@
             },
             {
               "datasource": {
-                "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "name": "prometheus"
               },
               "editorMode": "code",
               "expr": "max(kube_pod_container_resource_requests{pod=~\"aiops-akora-ui.*\", resource=\"memory\"})",
@@ -1630,8 +1507,7 @@
             },
             {
               "datasource": {
-                "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "name": "prometheus"
               },
               "editorMode": "code",
               "expr": "max(kube_pod_container_resource_limits{pod=~\"aiops-akora-ui.*\", resource=\"memory\"})",
@@ -1647,8 +1523,7 @@
         },
         {
           "datasource": {
-            "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "name": "prometheus"
           },
           "fieldConfig": {
             "defaults": {
@@ -1758,7 +1633,7 @@
             "h": 8,
             "w": 12,
             "x": 0,
-            "y": 463
+            "y": 906
           },
           "id": 48,
           "options": {
@@ -1781,8 +1656,7 @@
           "targets": [
             {
               "datasource": {
-                "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "name": "prometheus"
               },
               "editorMode": "code",
               "expr": "max(node_namespace_pod_container:container_cpu_usage_seconds_total:sum_irate{pod=~\"aiops-connections-ui-.*\" }) by (pod)",
@@ -1792,8 +1666,7 @@
             },
             {
               "datasource": {
-                "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "name": "prometheus"
               },
               "editorMode": "code",
               "expr": "max(kube_pod_container_resource_requests{pod=~\"aiops-connections-ui-.*\" , resource=\"cpu\"})",
@@ -1805,8 +1678,7 @@
             },
             {
               "datasource": {
-                "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "name": "prometheus"
               },
               "editorMode": "code",
               "expr": "max(kube_pod_container_resource_limits{pod=~\"aiops-connections-ui-.*\" , resource=\"cpu\"})",
@@ -1822,8 +1694,7 @@
         },
         {
           "datasource": {
-            "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "name": "prometheus"
           },
           "fieldConfig": {
             "defaults": {
@@ -1933,7 +1804,7 @@
             "h": 8,
             "w": 12,
             "x": 12,
-            "y": 463
+            "y": 906
           },
           "id": 49,
           "options": {
@@ -1956,8 +1827,7 @@
           "targets": [
             {
               "datasource": {
-                "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "name": "prometheus"
               },
               "editorMode": "code",
               "expr": "max(container_memory_working_set_bytes{pod=~\"aiops-connections-ui-.*\" , container!=\"\"}) by (pod)",
@@ -1967,8 +1837,7 @@
             },
             {
               "datasource": {
-                "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "name": "prometheus"
               },
               "editorMode": "code",
               "expr": "max(kube_pod_container_resource_requests{pod=~\"aiops-connections-ui-.*\" , resource=\"memory\"})",
@@ -1980,8 +1849,7 @@
             },
             {
               "datasource": {
-                "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "name": "prometheus"
               },
               "editorMode": "code",
               "expr": "max(kube_pod_container_resource_limits{pod=~\"aiops-connections-ui-.*\" , resource=\"memory\"})",
@@ -1997,8 +1865,7 @@
         },
         {
           "datasource": {
-            "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "name": "prometheus"
           },
           "fieldConfig": {
             "defaults": {
@@ -2108,7 +1975,7 @@
             "h": 8,
             "w": 12,
             "x": 0,
-            "y": 471
+            "y": 914
           },
           "id": 32,
           "options": {
@@ -2131,8 +1998,7 @@
           "targets": [
             {
               "datasource": {
-                "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "name": "prometheus"
               },
               "editorMode": "code",
               "expr": "max(node_namespace_pod_container:container_cpu_usage_seconds_total:sum_irate{pod=~\"aiops-ai-model-ui.*\"}) by (pod)",
@@ -2142,8 +2008,7 @@
             },
             {
               "datasource": {
-                "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "name": "prometheus"
               },
               "editorMode": "code",
               "expr": "max(kube_pod_container_resource_requests{pod=~\"aiops-ai-model-ui.*\", resource=\"cpu\"})",
@@ -2155,8 +2020,7 @@
             },
             {
               "datasource": {
-                "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "name": "prometheus"
               },
               "editorMode": "code",
               "expr": "max(kube_pod_container_resource_limits{pod=~\"aiops-ai-model-ui.*\", resource=\"cpu\"})",
@@ -2172,8 +2036,7 @@
         },
         {
           "datasource": {
-            "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "name": "prometheus"
           },
           "fieldConfig": {
             "defaults": {
@@ -2283,7 +2146,7 @@
             "h": 8,
             "w": 12,
             "x": 12,
-            "y": 471
+            "y": 914
           },
           "id": 34,
           "options": {
@@ -2306,8 +2169,7 @@
           "targets": [
             {
               "datasource": {
-                "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "name": "prometheus"
               },
               "editorMode": "code",
               "expr": "max(container_memory_working_set_bytes{pod=~\"aiops-ai-model-ui.*\", container!=\"\"}) by (pod)",
@@ -2317,8 +2179,7 @@
             },
             {
               "datasource": {
-                "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "name": "prometheus"
               },
               "editorMode": "code",
               "expr": "max(kube_pod_container_resource_requests{pod=~\"aiops-ai-model-ui.*\", resource=\"memory\"})",
@@ -2330,8 +2191,7 @@
             },
             {
               "datasource": {
-                "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "name": "prometheus"
               },
               "editorMode": "code",
               "expr": "max(kube_pod_container_resource_limits{pod=~\"aiops-ai-model-ui.*\", resource=\"memory\"})",
@@ -2347,8 +2207,7 @@
         },
         {
           "datasource": {
-            "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "name": "prometheus"
           },
           "fieldConfig": {
             "defaults": {
@@ -2465,7 +2324,7 @@
             "h": 8,
             "w": 12,
             "x": 0,
-            "y": 479
+            "y": 922
           },
           "id": 50,
           "options": {
@@ -2488,8 +2347,7 @@
           "targets": [
             {
               "datasource": {
-                "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "name": "prometheus"
               },
               "editorMode": "code",
               "expr": "max(node_namespace_pod_container:container_cpu_usage_seconds_total:sum_irate{pod=~\"aiops-insights-ui-.*\"}) by (pod)",
@@ -2500,8 +2358,7 @@
             },
             {
               "datasource": {
-                "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "name": "prometheus"
               },
               "editorMode": "code",
               "expr": "max(kube_pod_container_resource_requests{pod=~\"aiops-insights-ui-.*\", resource=\"cpu\"})",
@@ -2513,8 +2370,7 @@
             },
             {
               "datasource": {
-                "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "name": "prometheus"
               },
               "editorMode": "code",
               "expr": "max(kube_pod_container_resource_limits{pod=~\"aiops-insights-ui-.*\", resource=\"cpu\"})",
@@ -2530,8 +2386,7 @@
         },
         {
           "datasource": {
-            "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "name": "prometheus"
           },
           "fieldConfig": {
             "defaults": {
@@ -2648,7 +2503,7 @@
             "h": 8,
             "w": 12,
             "x": 12,
-            "y": 479
+            "y": 922
           },
           "id": 51,
           "options": {
@@ -2671,8 +2526,7 @@
           "targets": [
             {
               "datasource": {
-                "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "name": "prometheus"
               },
               "editorMode": "code",
               "expr": "max(container_memory_working_set_bytes{pod=~\"aiops-insights-ui-.*\", container!=\"\"}) by (pod)",
@@ -2682,8 +2536,7 @@
             },
             {
               "datasource": {
-                "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "name": "prometheus"
               },
               "editorMode": "code",
               "expr": "max(kube_pod_container_resource_requests{pod=~\"aiops-insights-ui-.*\", resource=\"memory\"})",
@@ -2695,8 +2548,7 @@
             },
             {
               "datasource": {
-                "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "name": "prometheus"
               },
               "editorMode": "code",
               "expr": "max(kube_pod_container_resource_limits{pod=~\"aiops-insights-ui-.*\", resource=\"memory\"})",
@@ -2726,8 +2578,7 @@
       "panels": [
         {
           "datasource": {
-            "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "name": "prometheus"
           },
           "description": "2xx, 4xx, & 5xx request counts within the time range.\n\nThese counts may increase by more than 1 at a time. What appears to be one request in the UI, may be several in the backed and these counts will reflect that.",
           "fieldConfig": {
@@ -2821,7 +2672,7 @@
             "h": 12,
             "w": 9,
             "x": 0,
-            "y": 3
+            "y": 446
           },
           "id": 2,
           "options": {
@@ -2852,8 +2703,7 @@
           "targets": [
             {
               "datasource": {
-                "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "name": "prometheus"
               },
               "editorMode": "code",
               "expr": "sum(increase(ibm_aiops_aiops_base_ui_request_total{code=~\"2..\"}[$__range]) or vector(0))",
@@ -2863,8 +2713,7 @@
             },
             {
               "datasource": {
-                "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "name": "prometheus"
               },
               "editorMode": "code",
               "expr": "sum(increase(ibm_aiops_aiops_base_ui_request_total{code=~\"4..\"}[$__range]) or vector(0))",
@@ -2877,8 +2726,7 @@
             },
             {
               "datasource": {
-                "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "name": "prometheus"
               },
               "editorMode": "code",
               "expr": "sum(increase(ibm_aiops_aiops_base_ui_request_total{code=~\"5..\"}[$__range]) or vector(0))",
@@ -2894,8 +2742,7 @@
         },
         {
           "datasource": {
-            "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "name": "prometheus"
           },
           "description": "Count that tracks the number of 400 **bad request** errors within the time range.",
           "fieldConfig": {
@@ -2929,7 +2776,7 @@
             "h": 3,
             "w": 3,
             "x": 9,
-            "y": 3
+            "y": 446
           },
           "id": 52,
           "options": {
@@ -2951,8 +2798,7 @@
           "targets": [
             {
               "datasource": {
-                "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "name": "prometheus"
               },
               "editorMode": "code",
               "expr": "sum(increase(ibm_aiops_aiops_base_ui_request_total{code=~\"400\"}[$__range]) or vector(0))",
@@ -2966,8 +2812,7 @@
         },
         {
           "datasource": {
-            "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "name": "prometheus"
           },
           "description": "Count that tracks the number of 401 **unauthorized** errors within the time range",
           "fieldConfig": {
@@ -3001,7 +2846,7 @@
             "h": 3,
             "w": 3,
             "x": 12,
-            "y": 3
+            "y": 446
           },
           "id": 53,
           "options": {
@@ -3023,8 +2868,7 @@
           "targets": [
             {
               "datasource": {
-                "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "name": "prometheus"
               },
               "editorMode": "code",
               "expr": "sum(increase(ibm_aiops_aiops_base_ui_request_total{code=~\"401\"}[$__range]) or vector(0))",
@@ -3038,8 +2882,7 @@
         },
         {
           "datasource": {
-            "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "name": "prometheus"
           },
           "description": "Count that tracks the number of 403 forbidden errors in the within the time range",
           "fieldConfig": {
@@ -3073,7 +2916,7 @@
             "h": 3,
             "w": 3,
             "x": 15,
-            "y": 3
+            "y": 446
           },
           "id": 54,
           "options": {
@@ -3095,8 +2938,7 @@
           "targets": [
             {
               "datasource": {
-                "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "name": "prometheus"
               },
               "editorMode": "code",
               "expr": "sum(increase(ibm_aiops_aiops_base_ui_request_total{code=~\"403\"}[$__range]) or vector(0))",
@@ -3110,8 +2952,7 @@
         },
         {
           "datasource": {
-            "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "name": "prometheus"
           },
           "description": "Count that tracks the number of 404 **not found** errors within the time range",
           "fieldConfig": {
@@ -3145,7 +2986,7 @@
             "h": 3,
             "w": 3,
             "x": 18,
-            "y": 3
+            "y": 446
           },
           "id": 56,
           "options": {
@@ -3167,8 +3008,7 @@
           "targets": [
             {
               "datasource": {
-                "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "name": "prometheus"
               },
               "editorMode": "code",
               "expr": "sum(increase(ibm_aiops_aiops_base_ui_request_total{code=~\"404\"}[$__range]) or vector(0))",
@@ -3182,8 +3022,7 @@
         },
         {
           "datasource": {
-            "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "name": "prometheus"
           },
           "description": "Count that tracks the number of 407 \"proxy auth required\" errors UI within the time range",
           "fieldConfig": {
@@ -3217,7 +3056,7 @@
             "h": 3,
             "w": 3,
             "x": 21,
-            "y": 3
+            "y": 446
           },
           "id": 55,
           "options": {
@@ -3239,8 +3078,7 @@
           "targets": [
             {
               "datasource": {
-                "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "name": "prometheus"
               },
               "editorMode": "code",
               "expr": "sum(increase(ibm_aiops_aiops_base_ui_request_total{code=~\"407\"}[$__range]) or vector(0))",
@@ -3254,8 +3092,7 @@
         },
         {
           "datasource": {
-            "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "name": "prometheus"
           },
           "description": "Count that tracks the number of 500 \"internal server\" errors within the time range.",
           "fieldConfig": {
@@ -3289,7 +3126,7 @@
             "h": 3,
             "w": 3,
             "x": 9,
-            "y": 6
+            "y": 449
           },
           "id": 57,
           "options": {
@@ -3311,8 +3148,7 @@
           "targets": [
             {
               "datasource": {
-                "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "name": "prometheus"
               },
               "editorMode": "code",
               "expr": "sum(increase(ibm_aiops_aiops_base_ui_request_total{code=~\"500\"}[$__range]) or vector(0))",
@@ -3326,8 +3162,7 @@
         },
         {
           "datasource": {
-            "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "name": "prometheus"
           },
           "description": "Count that tracks the number of 501 \"not implemented\" errors within the time range",
           "fieldConfig": {
@@ -3361,7 +3196,7 @@
             "h": 3,
             "w": 3,
             "x": 12,
-            "y": 6
+            "y": 449
           },
           "id": 58,
           "options": {
@@ -3383,8 +3218,7 @@
           "targets": [
             {
               "datasource": {
-                "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "name": "prometheus"
               },
               "editorMode": "code",
               "expr": "sum(increase(ibm_aiops_aiops_base_ui_request_total{code=~\"501\"}[$__range]) or vector(0))",
@@ -3398,8 +3232,7 @@
         },
         {
           "datasource": {
-            "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "name": "prometheus"
           },
           "description": "Count that tracks the number of 502 \"bad gateway\" errors within the time range",
           "fieldConfig": {
@@ -3433,7 +3266,7 @@
             "h": 3,
             "w": 3,
             "x": 15,
-            "y": 6
+            "y": 449
           },
           "id": 59,
           "options": {
@@ -3455,8 +3288,7 @@
           "targets": [
             {
               "datasource": {
-                "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "name": "prometheus"
               },
               "editorMode": "code",
               "expr": "sum(increase(ibm_aiops_aiops_base_ui_request_total{code=~\"502\"}[$__range]) or vector(0))",
@@ -3470,8 +3302,7 @@
         },
         {
           "datasource": {
-            "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "name": "prometheus"
           },
           "description": "Count that tracks the number of 503 \"service unavailable\"within the time range",
           "fieldConfig": {
@@ -3505,7 +3336,7 @@
             "h": 3,
             "w": 3,
             "x": 18,
-            "y": 6
+            "y": 449
           },
           "id": 82,
           "options": {
@@ -3527,8 +3358,7 @@
           "targets": [
             {
               "datasource": {
-                "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "name": "prometheus"
               },
               "editorMode": "code",
               "expr": "sum(increase(ibm_aiops_aiops_base_ui_request_total{code=~\"503\"}[$__range]) or vector(0))",
@@ -3542,8 +3372,7 @@
         },
         {
           "datasource": {
-            "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "name": "prometheus"
           },
           "description": "Count that tracks the number of 504 \"gateway timeout\" errors within the time range",
           "fieldConfig": {
@@ -3577,7 +3406,7 @@
             "h": 3,
             "w": 3,
             "x": 21,
-            "y": 6
+            "y": 449
           },
           "id": 61,
           "options": {
@@ -3599,8 +3428,7 @@
           "targets": [
             {
               "datasource": {
-                "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "name": "prometheus"
               },
               "editorMode": "code",
               "expr": "sum(increase(ibm_aiops_aiops_base_ui_request_total{code=~\"504\"}[$__range]) or vector(0))",
@@ -3614,8 +3442,7 @@
         },
         {
           "datasource": {
-            "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "name": "prometheus"
           },
           "description": "Average request rates per minute by request & response",
           "fieldConfig": {
@@ -3729,7 +3556,7 @@
             "h": 6,
             "w": 15,
             "x": 9,
-            "y": 9
+            "y": 452
           },
           "id": 62,
           "options": {
@@ -3749,8 +3576,7 @@
           "targets": [
             {
               "datasource": {
-                "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "name": "prometheus"
               },
               "editorMode": "code",
               "expr": "sum(rate(ibm_aiops_aiops_base_ui_request_total{code=~\"2..\"}[3m]) * 60) by (code, method)",
@@ -3760,8 +3586,7 @@
             },
             {
               "datasource": {
-                "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "name": "prometheus"
               },
               "editorMode": "code",
               "expr": "sum(rate(ibm_aiops_aiops_base_ui_request_total{code=~\"4..\"}[3m]) * 60) by (code, method)",
@@ -3774,8 +3599,7 @@
             },
             {
               "datasource": {
-                "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "name": "prometheus"
               },
               "editorMode": "code",
               "expr": "sum(rate(ibm_aiops_aiops_base_ui_request_total{code=~\"5..\"}[3m]) * 60) by (code, method)",
@@ -3805,8 +3629,7 @@
       "panels": [
         {
           "datasource": {
-            "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "name": "prometheus"
           },
           "description": "2xx, 4xx, & 5xx request counts within the time range.\n\nThese counts may increase by more than 1 at a time. What appears to be one request in the UI, will be several in the backend and these counts will reflect that.",
           "fieldConfig": {
@@ -3900,7 +3723,7 @@
             "h": 12,
             "w": 9,
             "x": 0,
-            "y": 16
+            "y": 459
           },
           "id": 73,
           "options": {
@@ -3931,8 +3754,7 @@
           "targets": [
             {
               "datasource": {
-                "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "name": "prometheus"
               },
               "editorMode": "code",
               "expr": "sum(increase(ibm_aiops_aiops_akora_ui_request_total{code=~\"2..\"}[$__range]) or vector(0))",
@@ -3942,8 +3764,7 @@
             },
             {
               "datasource": {
-                "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "name": "prometheus"
               },
               "editorMode": "code",
               "expr": "sum(increase(ibm_aiops_aiops_akora_ui_request_total{code=~\"4..\"}[$__range]) or vector(0))",
@@ -3956,8 +3777,7 @@
             },
             {
               "datasource": {
-                "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "name": "prometheus"
               },
               "editorMode": "code",
               "expr": "sum(increase(ibm_aiops_aiops_akora_ui_request_total{code=~\"5..\"}[$__range]) or vector(0))",
@@ -3973,8 +3793,7 @@
         },
         {
           "datasource": {
-            "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "name": "prometheus"
           },
           "description": "Count that tracks the number of 400 **bad request** errors within the time range.",
           "fieldConfig": {
@@ -4008,7 +3827,7 @@
             "h": 3,
             "w": 3,
             "x": 9,
-            "y": 16
+            "y": 459
           },
           "id": 75,
           "options": {
@@ -4030,8 +3849,7 @@
           "targets": [
             {
               "datasource": {
-                "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "name": "prometheus"
               },
               "editorMode": "code",
               "expr": "sum(increase(ibm_aiops_aiops_akora_ui_request_total{code=~\"400\"}[$__range]) or vector(0))",
@@ -4045,8 +3863,7 @@
         },
         {
           "datasource": {
-            "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "name": "prometheus"
           },
           "description": "Count that tracks the number of 401 **unauthorized** errors within the time range",
           "fieldConfig": {
@@ -4080,7 +3897,7 @@
             "h": 3,
             "w": 3,
             "x": 12,
-            "y": 16
+            "y": 459
           },
           "id": 91,
           "options": {
@@ -4102,8 +3919,7 @@
           "targets": [
             {
               "datasource": {
-                "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "name": "prometheus"
               },
               "editorMode": "code",
               "expr": "sum(increase(ibm_aiops_aiops_akora_ui_request_total{code=~\"401\"}[$__range]) or vector(0))",
@@ -4117,8 +3933,7 @@
         },
         {
           "datasource": {
-            "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "name": "prometheus"
           },
           "description": "Count that tracks the number of 403 forbidden errors in the within the time range",
           "fieldConfig": {
@@ -4152,7 +3967,7 @@
             "h": 3,
             "w": 3,
             "x": 15,
-            "y": 16
+            "y": 459
           },
           "id": 79,
           "options": {
@@ -4174,8 +3989,7 @@
           "targets": [
             {
               "datasource": {
-                "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "name": "prometheus"
               },
               "editorMode": "code",
               "expr": "sum(increase(ibm_aiops_aiops_akora_ui_request_total{code=~\"403\"}[$__range]) or vector(0))",
@@ -4189,8 +4003,7 @@
         },
         {
           "datasource": {
-            "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "name": "prometheus"
           },
           "description": "Count that tracks the number of 404 **not found** errors within the time range",
           "fieldConfig": {
@@ -4224,7 +4037,7 @@
             "h": 3,
             "w": 3,
             "x": 18,
-            "y": 16
+            "y": 459
           },
           "id": 95,
           "options": {
@@ -4246,8 +4059,7 @@
           "targets": [
             {
               "datasource": {
-                "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "name": "prometheus"
               },
               "editorMode": "code",
               "expr": "sum(increase(ibm_aiops_aiops_akora_ui_request_total{code=~\"404\"}[$__range]) or vector(0))",
@@ -4261,8 +4073,7 @@
         },
         {
           "datasource": {
-            "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "name": "prometheus"
           },
           "description": "Count that tracks the number of 407 \"proxy auth required\" errors UI within the time range",
           "fieldConfig": {
@@ -4296,7 +4107,7 @@
             "h": 3,
             "w": 3,
             "x": 21,
-            "y": 16
+            "y": 459
           },
           "id": 97,
           "options": {
@@ -4318,8 +4129,7 @@
           "targets": [
             {
               "datasource": {
-                "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "name": "prometheus"
               },
               "editorMode": "code",
               "expr": "sum(increase(ibm_aiops_aiops_akora_ui_request_total{code=~\"407\"}[$__range]) or vector(0))",
@@ -4333,8 +4143,7 @@
         },
         {
           "datasource": {
-            "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "name": "prometheus"
           },
           "description": "Count that tracks the number of 500 \"internal server\" errors within the time range.",
           "fieldConfig": {
@@ -4368,7 +4177,7 @@
             "h": 3,
             "w": 3,
             "x": 9,
-            "y": 19
+            "y": 462
           },
           "id": 76,
           "options": {
@@ -4390,8 +4199,7 @@
           "targets": [
             {
               "datasource": {
-                "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "name": "prometheus"
               },
               "editorMode": "code",
               "expr": "sum(increase(ibm_aiops_aiops_akora_ui_request_total{code=~\"500\"}[$__range]) or vector(0))",
@@ -4405,8 +4213,7 @@
         },
         {
           "datasource": {
-            "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "name": "prometheus"
           },
           "description": "Count that tracks the number of 501 \"not implemented\" errors within the time range",
           "fieldConfig": {
@@ -4440,7 +4247,7 @@
             "h": 3,
             "w": 3,
             "x": 12,
-            "y": 19
+            "y": 462
           },
           "id": 85,
           "options": {
@@ -4462,8 +4269,7 @@
           "targets": [
             {
               "datasource": {
-                "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "name": "prometheus"
               },
               "editorMode": "code",
               "expr": "sum(increase(ibm_aiops_aiops_akora_ui_request_total{code=~\"501\"}[$__range]) or vector(0))",
@@ -4477,8 +4283,7 @@
         },
         {
           "datasource": {
-            "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "name": "prometheus"
           },
           "description": "Count that tracks the number of 502 \"bad gateway\" errors within the time range",
           "fieldConfig": {
@@ -4512,7 +4317,7 @@
             "h": 3,
             "w": 3,
             "x": 15,
-            "y": 19
+            "y": 462
           },
           "id": 80,
           "options": {
@@ -4534,8 +4339,7 @@
           "targets": [
             {
               "datasource": {
-                "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "name": "prometheus"
               },
               "editorMode": "code",
               "expr": "sum(increase(ibm_aiops_aiops_akora_ui_request_total{code=~\"502\"}[$__range]) or vector(0))",
@@ -4549,8 +4353,7 @@
         },
         {
           "datasource": {
-            "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "name": "prometheus"
           },
           "description": "Count that tracks the number of 503 \"service unavailable\"within the time range",
           "fieldConfig": {
@@ -4584,7 +4387,7 @@
             "h": 3,
             "w": 3,
             "x": 18,
-            "y": 19
+            "y": 462
           },
           "id": 60,
           "options": {
@@ -4606,8 +4409,7 @@
           "targets": [
             {
               "datasource": {
-                "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "name": "prometheus"
               },
               "editorMode": "code",
               "expr": "sum(increase(ibm_aiops_aiops_akora_ui_request_total{code=~\"503\"}[$__range]) or vector(0))",
@@ -4621,8 +4423,7 @@
         },
         {
           "datasource": {
-            "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "name": "prometheus"
           },
           "description": "Count that tracks the number of 504 \"gateway timeout\" errors within the time range",
           "fieldConfig": {
@@ -4656,7 +4457,7 @@
             "h": 3,
             "w": 3,
             "x": 21,
-            "y": 19
+            "y": 462
           },
           "id": 83,
           "options": {
@@ -4678,8 +4479,7 @@
           "targets": [
             {
               "datasource": {
-                "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "name": "prometheus"
               },
               "editorMode": "code",
               "expr": "sum(increase(ibm_aiops_aiops_akora_ui_request_total{code=~\"504\"}[$__range]) or vector(0))",
@@ -4693,8 +4493,7 @@
         },
         {
           "datasource": {
-            "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "name": "prometheus"
           },
           "description": "Average request rates per minute by request & response",
           "fieldConfig": {
@@ -4808,7 +4607,7 @@
             "h": 6,
             "w": 15,
             "x": 9,
-            "y": 22
+            "y": 465
           },
           "id": 86,
           "options": {
@@ -4828,8 +4627,7 @@
           "targets": [
             {
               "datasource": {
-                "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "name": "prometheus"
               },
               "editorMode": "code",
               "expr": "sum(rate(ibm_aiops_aiops_akora_ui_request_total{code=~\"2..\"}[3m]) * 60) by (code, method)",
@@ -4839,8 +4637,7 @@
             },
             {
               "datasource": {
-                "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "name": "prometheus"
               },
               "editorMode": "code",
               "expr": "sum(rate(ibm_aiops_aiops_akora_ui_request_total{code=~\"4..\"}[3m]) * 60) by (code, method)",
@@ -4853,8 +4650,7 @@
             },
             {
               "datasource": {
-                "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "name": "prometheus"
               },
               "editorMode": "code",
               "expr": "sum(rate(ibm_aiops_aiops_akora_ui_request_total{code=~\"5..\"}[3m]) * 60) by (code, method)",
@@ -4884,8 +4680,7 @@
       "panels": [
         {
           "datasource": {
-            "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "name": "prometheus"
           },
           "description": "2xx, 4xx, & 5xx request counts within the time range.\n\nThese counts may increase by more than 1 at a time. What appears to be one request in the UI, may be several in the backed and these counts will reflect that.",
           "fieldConfig": {
@@ -4979,7 +4774,7 @@
             "h": 12,
             "w": 9,
             "x": 0,
-            "y": 29
+            "y": 472
           },
           "id": 102,
           "options": {
@@ -5010,8 +4805,7 @@
           "targets": [
             {
               "datasource": {
-                "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "name": "prometheus"
               },
               "editorMode": "code",
               "expr": "sum(increase(ibm_aiops_aiops_integration_ui_request_total{code=~\"2..\"}[$__range]) or vector(0))",
@@ -5021,8 +4815,7 @@
             },
             {
               "datasource": {
-                "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "name": "prometheus"
               },
               "editorMode": "code",
               "expr": "sum(increase(ibm_aiops_aiops_integration_ui_request_total{code=~\"4..\"}[$__range]) or vector(0))",
@@ -5035,8 +4828,7 @@
             },
             {
               "datasource": {
-                "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "name": "prometheus"
               },
               "editorMode": "code",
               "expr": "sum(increase(ibm_aiops_aiops_integration_ui_request_total{code=~\"5..\"}[$__range]) or vector(0))",
@@ -5052,8 +4844,7 @@
         },
         {
           "datasource": {
-            "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "name": "prometheus"
           },
           "description": "Count that tracks the number of 400 **bad request** errors within the time range.",
           "fieldConfig": {
@@ -5087,7 +4878,7 @@
             "h": 3,
             "w": 3,
             "x": 9,
-            "y": 29
+            "y": 472
           },
           "id": 104,
           "options": {
@@ -5109,8 +4900,7 @@
           "targets": [
             {
               "datasource": {
-                "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "name": "prometheus"
               },
               "editorMode": "code",
               "expr": "sum(increase(ibm_aiops_aiops_integration_ui_request_total{code=~\"400\"}[$__range]) or vector(0))",
@@ -5124,8 +4914,7 @@
         },
         {
           "datasource": {
-            "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "name": "prometheus"
           },
           "description": "Count that tracks the number of 401 **unauthorized** errors within the time range",
           "fieldConfig": {
@@ -5159,7 +4948,7 @@
             "h": 3,
             "w": 3,
             "x": 12,
-            "y": 29
+            "y": 472
           },
           "id": 105,
           "options": {
@@ -5181,8 +4970,7 @@
           "targets": [
             {
               "datasource": {
-                "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "name": "prometheus"
               },
               "editorMode": "code",
               "expr": "sum(increase(ibm_aiops_aiops_integration_ui_request_total{code=~\"401\"}[$__range]) or vector(0))",
@@ -5196,8 +4984,7 @@
         },
         {
           "datasource": {
-            "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "name": "prometheus"
           },
           "description": "Count that tracks the number of 403 forbidden errors in the within the time range",
           "fieldConfig": {
@@ -5231,7 +5018,7 @@
             "h": 3,
             "w": 3,
             "x": 15,
-            "y": 29
+            "y": 472
           },
           "id": 107,
           "options": {
@@ -5253,8 +5040,7 @@
           "targets": [
             {
               "datasource": {
-                "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "name": "prometheus"
               },
               "editorMode": "code",
               "expr": "sum(increase(ibm_aiops_aiops_integration_ui_request_total{code=~\"403\"}[$__range]) or vector(0))",
@@ -5268,8 +5054,7 @@
         },
         {
           "datasource": {
-            "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "name": "prometheus"
           },
           "description": "Count that tracks the number of 404 **not found** errors within the time range",
           "fieldConfig": {
@@ -5303,7 +5088,7 @@
             "h": 3,
             "w": 3,
             "x": 18,
-            "y": 29
+            "y": 472
           },
           "id": 109,
           "options": {
@@ -5325,8 +5110,7 @@
           "targets": [
             {
               "datasource": {
-                "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "name": "prometheus"
               },
               "editorMode": "code",
               "expr": "sum(increase(ibm_aiops_aiops_integration_ui_request_total{code=~\"404\"}[$__range]) or vector(0))",
@@ -5340,8 +5124,7 @@
         },
         {
           "datasource": {
-            "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "name": "prometheus"
           },
           "description": "Count that tracks the number of 407 \"proxy auth required\" errors UI within the time range",
           "fieldConfig": {
@@ -5375,7 +5158,7 @@
             "h": 3,
             "w": 3,
             "x": 21,
-            "y": 29
+            "y": 472
           },
           "id": 111,
           "options": {
@@ -5397,8 +5180,7 @@
           "targets": [
             {
               "datasource": {
-                "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "name": "prometheus"
               },
               "editorMode": "code",
               "expr": "sum(increase(ibm_aiops_aiops_integration_ui_request_total{code=~\"407\"}[$__range]) or vector(0))",
@@ -5412,8 +5194,7 @@
         },
         {
           "datasource": {
-            "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "name": "prometheus"
           },
           "description": "Count that tracks the number of 500 \"internal server\" errors within the time range.",
           "fieldConfig": {
@@ -5447,7 +5228,7 @@
             "h": 3,
             "w": 3,
             "x": 9,
-            "y": 32
+            "y": 475
           },
           "id": 103,
           "options": {
@@ -5469,8 +5250,7 @@
           "targets": [
             {
               "datasource": {
-                "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "name": "prometheus"
               },
               "editorMode": "code",
               "expr": "sum(increase(ibm_aiops_aiops_integration_ui_request_total{code=~\"500\"}[$__range]) or vector(0))",
@@ -5484,8 +5264,7 @@
         },
         {
           "datasource": {
-            "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "name": "prometheus"
           },
           "description": "Count that tracks the number of 501 \"not implemented\" errors within the time range",
           "fieldConfig": {
@@ -5519,7 +5298,7 @@
             "h": 3,
             "w": 3,
             "x": 12,
-            "y": 32
+            "y": 475
           },
           "id": 92,
           "options": {
@@ -5541,8 +5320,7 @@
           "targets": [
             {
               "datasource": {
-                "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "name": "prometheus"
               },
               "editorMode": "code",
               "expr": "sum(increase(ibm_aiops_aiops_integration_ui_request_total{code=~\"501\"}[$__range]) or vector(0))",
@@ -5556,8 +5334,7 @@
         },
         {
           "datasource": {
-            "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "name": "prometheus"
           },
           "description": "Count that tracks the number of 502 \"bad gateway\" errors within the time range",
           "fieldConfig": {
@@ -5591,7 +5368,7 @@
             "h": 3,
             "w": 3,
             "x": 15,
-            "y": 32
+            "y": 475
           },
           "id": 108,
           "options": {
@@ -5613,8 +5390,7 @@
           "targets": [
             {
               "datasource": {
-                "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "name": "prometheus"
               },
               "editorMode": "code",
               "expr": "sum(increase(ibm_aiops_aiops_integration_ui_request_total{code=~\"502\"}[$__range]) or vector(0))",
@@ -5628,8 +5404,7 @@
         },
         {
           "datasource": {
-            "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "name": "prometheus"
           },
           "description": "Count that tracks the number of 503 \"service unavailable\"within the time range",
           "fieldConfig": {
@@ -5663,7 +5438,7 @@
             "h": 3,
             "w": 3,
             "x": 18,
-            "y": 32
+            "y": 475
           },
           "id": 96,
           "options": {
@@ -5685,8 +5460,7 @@
           "targets": [
             {
               "datasource": {
-                "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "name": "prometheus"
               },
               "editorMode": "code",
               "expr": "sum(increase(ibm_aiops_aiops_integration_ui_request_total{code=~\"503\"}[$__range]) or vector(0))",
@@ -5700,8 +5474,7 @@
         },
         {
           "datasource": {
-            "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "name": "prometheus"
           },
           "description": "Count that tracks the number of 504 \"gateway timeout\" errors within the time range",
           "fieldConfig": {
@@ -5735,7 +5508,7 @@
             "h": 3,
             "w": 3,
             "x": 21,
-            "y": 32
+            "y": 475
           },
           "id": 98,
           "options": {
@@ -5757,8 +5530,7 @@
           "targets": [
             {
               "datasource": {
-                "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "name": "prometheus"
               },
               "editorMode": "code",
               "expr": "sum(increase(ibm_aiops_aiops_integration_ui_request_total{code=~\"504\"}[$__range]) or vector(0))",
@@ -5772,8 +5544,7 @@
         },
         {
           "datasource": {
-            "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "name": "prometheus"
           },
           "description": "Average request rates per minute by request & response",
           "fieldConfig": {
@@ -5887,7 +5658,7 @@
             "h": 6,
             "w": 15,
             "x": 9,
-            "y": 35
+            "y": 478
           },
           "id": 99,
           "options": {
@@ -5907,8 +5678,7 @@
           "targets": [
             {
               "datasource": {
-                "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "name": "prometheus"
               },
               "editorMode": "code",
               "expr": "sum(rate(ibm_aiops_aiops_integration_ui_request_total{code=~\"2..\"}[3m]) * 60) by (code, method)",
@@ -5918,8 +5688,7 @@
             },
             {
               "datasource": {
-                "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "name": "prometheus"
               },
               "editorMode": "code",
               "expr": "sum(rate(ibm_aiops_aiops_integration_ui_request_total{code=~\"4..\"}[3m]) * 60) by (code, method)",
@@ -5932,8 +5701,7 @@
             },
             {
               "datasource": {
-                "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "name": "prometheus"
               },
               "editorMode": "code",
               "expr": "sum(rate(ibm_aiops_aiops_integration_ui_request_total{code=~\"5..\"}[3m]) * 60) by (code, method)",
@@ -5963,8 +5731,7 @@
       "panels": [
         {
           "datasource": {
-            "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "name": "prometheus"
           },
           "description": "2xx, 4xx, & 5xx request counts within the time range.\n\nThese counts may increase by more than 1 at a time. What appears to be one request in the UI, may be several in the backed and these counts will reflect that.",
           "fieldConfig": {
@@ -6058,7 +5825,7 @@
             "h": 12,
             "w": 9,
             "x": 0,
-            "y": 42
+            "y": 485
           },
           "id": 88,
           "options": {
@@ -6089,8 +5856,7 @@
           "targets": [
             {
               "datasource": {
-                "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "name": "prometheus"
               },
               "editorMode": "code",
               "expr": "sum(increase(ibm_aiops_aiops_ai_models_ui_request_total{code=~\"2..\"}[$__range]) or vector(0))",
@@ -6100,8 +5866,7 @@
             },
             {
               "datasource": {
-                "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "name": "prometheus"
               },
               "editorMode": "code",
               "expr": "sum(increase(ibm_aiops_aiops_ai_models_ui_request_total{code=~\"4..\"}[$__range]) or vector(0))",
@@ -6114,8 +5879,7 @@
             },
             {
               "datasource": {
-                "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "name": "prometheus"
               },
               "editorMode": "code",
               "expr": "sum(increase(ibm_aiops_aiops_ai_models_ui_request_total{code=~\"5..\"}[$__range]) or vector(0))",
@@ -6131,8 +5895,7 @@
         },
         {
           "datasource": {
-            "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "name": "prometheus"
           },
           "description": "Count that tracks the number of 400 **bad request** errors within the time range.",
           "fieldConfig": {
@@ -6166,7 +5929,7 @@
             "h": 3,
             "w": 3,
             "x": 9,
-            "y": 42
+            "y": 485
           },
           "id": 90,
           "options": {
@@ -6188,8 +5951,7 @@
           "targets": [
             {
               "datasource": {
-                "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "name": "prometheus"
               },
               "editorMode": "code",
               "expr": "sum(increase(ibm_aiops_aiops_ai_models_ui_request_total{code=~\"400\"}[$__range]) or vector(0))",
@@ -6203,8 +5965,7 @@
         },
         {
           "datasource": {
-            "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "name": "prometheus"
           },
           "description": "Count that tracks the number of 401 **unauthorized** errors within the time range",
           "fieldConfig": {
@@ -6238,7 +5999,7 @@
             "h": 3,
             "w": 3,
             "x": 12,
-            "y": 42
+            "y": 485
           },
           "id": 78,
           "options": {
@@ -6260,8 +6021,7 @@
           "targets": [
             {
               "datasource": {
-                "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "name": "prometheus"
               },
               "editorMode": "code",
               "expr": "sum(increase(ibm_aiops_aiops_ai_models_ui_request_total{code=~\"401\"}[$__range]) or vector(0))",
@@ -6275,8 +6035,7 @@
         },
         {
           "datasource": {
-            "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "name": "prometheus"
           },
           "description": "Count that tracks the number of 403 forbidden errors in the within the time range",
           "fieldConfig": {
@@ -6310,7 +6069,7 @@
             "h": 3,
             "w": 3,
             "x": 15,
-            "y": 42
+            "y": 485
           },
           "id": 94,
           "options": {
@@ -6332,8 +6091,7 @@
           "targets": [
             {
               "datasource": {
-                "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "name": "prometheus"
               },
               "editorMode": "code",
               "expr": "sum(increase(ibm_aiops_aiops_ai_models_ui_request_total{code=~\"403\"}[$__range]) or vector(0))",
@@ -6347,8 +6105,7 @@
         },
         {
           "datasource": {
-            "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "name": "prometheus"
           },
           "description": "Count that tracks the number of 404 **not found** errors within the time range",
           "fieldConfig": {
@@ -6382,7 +6139,7 @@
             "h": 3,
             "w": 3,
             "x": 18,
-            "y": 42
+            "y": 485
           },
           "id": 118,
           "options": {
@@ -6404,8 +6161,7 @@
           "targets": [
             {
               "datasource": {
-                "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "name": "prometheus"
               },
               "editorMode": "code",
               "expr": "sum(increase(ibm_aiops_aiops_ai_models_ui_request_total{code=~\"404\"}[$__range]) or vector(0))",
@@ -6419,8 +6175,7 @@
         },
         {
           "datasource": {
-            "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "name": "prometheus"
           },
           "description": "Count that tracks the number of 407 \"proxy auth required\" errors UI within the time range",
           "fieldConfig": {
@@ -6454,7 +6209,7 @@
             "h": 3,
             "w": 3,
             "x": 21,
-            "y": 42
+            "y": 485
           },
           "id": 84,
           "options": {
@@ -6476,8 +6231,7 @@
           "targets": [
             {
               "datasource": {
-                "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "name": "prometheus"
               },
               "editorMode": "code",
               "expr": "sum(increase(ibm_aiops_aiops_ai_models_ui_request_total{code=~\"407\"}[$__range]) or vector(0))",
@@ -6491,8 +6245,7 @@
         },
         {
           "datasource": {
-            "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "name": "prometheus"
           },
           "description": "Count that tracks the number of 500 \"internal server\" errors within the time range.",
           "fieldConfig": {
@@ -6526,7 +6279,7 @@
             "h": 3,
             "w": 3,
             "x": 9,
-            "y": 45
+            "y": 488
           },
           "id": 115,
           "options": {
@@ -6548,8 +6301,7 @@
           "targets": [
             {
               "datasource": {
-                "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "name": "prometheus"
               },
               "editorMode": "code",
               "expr": "sum(increase(ibm_aiops_aiops_ai_models_ui_request_total{code=~\"500\"}[$__range]) or vector(0))",
@@ -6563,8 +6315,7 @@
         },
         {
           "datasource": {
-            "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "name": "prometheus"
           },
           "description": "Count that tracks the number of 501 \"not implemented\" errors within the time range",
           "fieldConfig": {
@@ -6598,7 +6349,7 @@
             "h": 3,
             "w": 3,
             "x": 12,
-            "y": 45
+            "y": 488
           },
           "id": 121,
           "options": {
@@ -6620,8 +6371,7 @@
           "targets": [
             {
               "datasource": {
-                "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "name": "prometheus"
               },
               "editorMode": "code",
               "expr": "sum(increase(ibm_aiops_aiops_ai_models_ui_request_total{code=~\"501\"}[$__range]) or vector(0))",
@@ -6635,8 +6385,7 @@
         },
         {
           "datasource": {
-            "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "name": "prometheus"
           },
           "description": "Count that tracks the number of 502 \"bad gateway\" errors within the time range",
           "fieldConfig": {
@@ -6670,7 +6419,7 @@
             "h": 3,
             "w": 3,
             "x": 15,
-            "y": 45
+            "y": 488
           },
           "id": 122,
           "options": {
@@ -6692,8 +6441,7 @@
           "targets": [
             {
               "datasource": {
-                "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "name": "prometheus"
               },
               "editorMode": "code",
               "expr": "sum(increase(ibm_aiops_aiops_ai_models_ui_request_total{code=~\"502\"}[$__range]) or vector(0))",
@@ -6707,8 +6455,7 @@
         },
         {
           "datasource": {
-            "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "name": "prometheus"
           },
           "description": "Count that tracks the number of 503 \"service unavailable\"within the time range",
           "fieldConfig": {
@@ -6742,7 +6489,7 @@
             "h": 3,
             "w": 3,
             "x": 18,
-            "y": 45
+            "y": 488
           },
           "id": 123,
           "options": {
@@ -6764,8 +6511,7 @@
           "targets": [
             {
               "datasource": {
-                "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "name": "prometheus"
               },
               "editorMode": "code",
               "expr": "sum(increase(ibm_aiops_aiops_ai_models_ui_request_total{code=~\"503\"}[$__range]) or vector(0))",
@@ -6779,8 +6525,7 @@
         },
         {
           "datasource": {
-            "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "name": "prometheus"
           },
           "description": "Count that tracks the number of 504 \"gateway timeout\" errors within the time range",
           "fieldConfig": {
@@ -6814,7 +6559,7 @@
             "h": 3,
             "w": 3,
             "x": 21,
-            "y": 45
+            "y": 488
           },
           "id": 124,
           "options": {
@@ -6836,8 +6581,7 @@
           "targets": [
             {
               "datasource": {
-                "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "name": "prometheus"
               },
               "editorMode": "code",
               "expr": "sum(increase(ibm_aiops_aiops_ai_models_ui_request_total{code=~\"504\"}[$__range]) or vector(0))",
@@ -6851,8 +6595,7 @@
         },
         {
           "datasource": {
-            "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "name": "prometheus"
           },
           "description": "Average request rates per minute by request & response",
           "fieldConfig": {
@@ -6966,7 +6709,7 @@
             "h": 6,
             "w": 15,
             "x": 9,
-            "y": 48
+            "y": 491
           },
           "id": 125,
           "options": {
@@ -6986,8 +6729,7 @@
           "targets": [
             {
               "datasource": {
-                "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "name": "prometheus"
               },
               "editorMode": "code",
               "expr": "sum(rate(ibm_aiops_aiops_ai_models_ui_request_total{code=~\"2..\"}[3m]) * 60) by (code, method)",
@@ -6997,8 +6739,7 @@
             },
             {
               "datasource": {
-                "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "name": "prometheus"
               },
               "editorMode": "code",
               "expr": "sum(rate(ibm_aiops_aiops_ai_models_ui_request_total{code=~\"4..\"}[3m]) * 60) by (code, method)",
@@ -7011,8 +6752,7 @@
             },
             {
               "datasource": {
-                "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "name": "prometheus"
               },
               "editorMode": "code",
               "expr": "sum(rate(ibm_aiops_aiops_ai_models_ui_request_total{code=~\"5..\"}[3m]) * 60) by (code, method)",
@@ -7042,8 +6782,7 @@
       "panels": [
         {
           "datasource": {
-            "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "name": "prometheus"
           },
           "description": "2xx, 4xx, & 5xx request counts within the time range.\n\nThese counts may increase by more than 1 at a time. What appears to be one request in the UI, may be several in the backed and these counts will reflect that.",
           "fieldConfig": {
@@ -7137,7 +6876,7 @@
             "h": 12,
             "w": 9,
             "x": 0,
-            "y": 55
+            "y": 498
           },
           "id": 114,
           "options": {
@@ -7168,8 +6907,7 @@
           "targets": [
             {
               "datasource": {
-                "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "name": "prometheus"
               },
               "editorMode": "code",
               "expr": "sum(increase(ibm_aiops_aiops_insights_ui_request_total{code=~\"2..\"}[$__range]) or vector(0))",
@@ -7179,8 +6917,7 @@
             },
             {
               "datasource": {
-                "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "name": "prometheus"
               },
               "editorMode": "code",
               "expr": "sum(increase(ibm_aiops_aiops_insights_ui_request_total{code=~\"4..\"}[$__range]) or vector(0))",
@@ -7193,8 +6930,7 @@
             },
             {
               "datasource": {
-                "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "name": "prometheus"
               },
               "editorMode": "code",
               "expr": "sum(increase(ibm_aiops_aiops_insights_ui_request_total{code=~\"5..\"}[$__range]) or vector(0))",
@@ -7210,8 +6946,7 @@
         },
         {
           "datasource": {
-            "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "name": "prometheus"
           },
           "description": "Count that tracks the number of 400 **bad request** errors within the time range.",
           "fieldConfig": {
@@ -7245,7 +6980,7 @@
             "h": 3,
             "w": 3,
             "x": 9,
-            "y": 55
+            "y": 498
           },
           "id": 120,
           "options": {
@@ -7267,8 +7002,7 @@
           "targets": [
             {
               "datasource": {
-                "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "name": "prometheus"
               },
               "editorMode": "code",
               "expr": "sum(increase(ibm_aiops_aiops_insights_ui_request_total{code=~\"400\"}[$__range]) or vector(0))",
@@ -7282,8 +7016,7 @@
         },
         {
           "datasource": {
-            "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "name": "prometheus"
           },
           "description": "Count that tracks the number of 401 **unauthorized** errors within the time range",
           "fieldConfig": {
@@ -7317,7 +7050,7 @@
             "h": 3,
             "w": 3,
             "x": 12,
-            "y": 55
+            "y": 498
           },
           "id": 116,
           "options": {
@@ -7339,8 +7072,7 @@
           "targets": [
             {
               "datasource": {
-                "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "name": "prometheus"
               },
               "editorMode": "code",
               "expr": "sum(increase(ibm_aiops_aiops_insights_ui_request_total{code=~\"401\"}[$__range]) or vector(0))",
@@ -7354,8 +7086,7 @@
         },
         {
           "datasource": {
-            "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "name": "prometheus"
           },
           "description": "Count that tracks the number of 403 forbidden errors in the within the time range",
           "fieldConfig": {
@@ -7389,7 +7120,7 @@
             "h": 3,
             "w": 3,
             "x": 15,
-            "y": 55
+            "y": 498
           },
           "id": 117,
           "options": {
@@ -7411,8 +7142,7 @@
           "targets": [
             {
               "datasource": {
-                "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "name": "prometheus"
               },
               "editorMode": "code",
               "expr": "sum(increase(ibm_aiops_aiops_insights_ui_request_total{code=~\"403\"}[$__range]) or vector(0))",
@@ -7426,8 +7156,7 @@
         },
         {
           "datasource": {
-            "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "name": "prometheus"
           },
           "description": "Count that tracks the number of 404 **not found** errors within the time range",
           "fieldConfig": {
@@ -7461,7 +7190,7 @@
             "h": 3,
             "w": 3,
             "x": 18,
-            "y": 55
+            "y": 498
           },
           "id": 81,
           "options": {
@@ -7483,8 +7212,7 @@
           "targets": [
             {
               "datasource": {
-                "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "name": "prometheus"
               },
               "editorMode": "code",
               "expr": "sum(increase(ibm_aiops_aiops_insights_ui_request_total{code=~\"404\"}[$__range]) or vector(0))",
@@ -7498,8 +7226,7 @@
         },
         {
           "datasource": {
-            "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "name": "prometheus"
           },
           "description": "Count that tracks the number of 407 \"proxy auth required\" errors UI within the time range",
           "fieldConfig": {
@@ -7533,7 +7260,7 @@
             "h": 3,
             "w": 3,
             "x": 21,
-            "y": 55
+            "y": 498
           },
           "id": 119,
           "options": {
@@ -7555,8 +7282,7 @@
           "targets": [
             {
               "datasource": {
-                "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "name": "prometheus"
               },
               "editorMode": "code",
               "expr": "sum(increase(ibm_aiops_aiops_insights_ui_request_total{code=~\"407\"}[$__range]) or vector(0))",
@@ -7570,8 +7296,7 @@
         },
         {
           "datasource": {
-            "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "name": "prometheus"
           },
           "description": "Count that tracks the number of 500 \"internal server\" errors within the time range.",
           "fieldConfig": {
@@ -7605,7 +7330,7 @@
             "h": 3,
             "w": 3,
             "x": 9,
-            "y": 58
+            "y": 501
           },
           "id": 89,
           "options": {
@@ -7627,8 +7352,7 @@
           "targets": [
             {
               "datasource": {
-                "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "name": "prometheus"
               },
               "editorMode": "code",
               "expr": "sum(increase(ibm_aiops_aiops_insights_ui_request_total{code=~\"500\"}[$__range]) or vector(0))",
@@ -7642,8 +7366,7 @@
         },
         {
           "datasource": {
-            "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "name": "prometheus"
           },
           "description": "Count that tracks the number of 501 \"not implemented\" errors within the time range",
           "fieldConfig": {
@@ -7677,7 +7400,7 @@
             "h": 3,
             "w": 3,
             "x": 12,
-            "y": 58
+            "y": 501
           },
           "id": 106,
           "options": {
@@ -7699,8 +7422,7 @@
           "targets": [
             {
               "datasource": {
-                "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "name": "prometheus"
               },
               "editorMode": "code",
               "expr": "sum(increase(ibm_aiops_aiops_insights_ui_request_total{code=~\"501\"}[$__range]) or vector(0))",
@@ -7714,8 +7436,7 @@
         },
         {
           "datasource": {
-            "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "name": "prometheus"
           },
           "description": "Count that tracks the number of 502 \"bad gateway\" errors within the time range",
           "fieldConfig": {
@@ -7749,7 +7470,7 @@
             "h": 3,
             "w": 3,
             "x": 15,
-            "y": 58
+            "y": 501
           },
           "id": 93,
           "options": {
@@ -7771,8 +7492,7 @@
           "targets": [
             {
               "datasource": {
-                "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "name": "prometheus"
               },
               "editorMode": "code",
               "expr": "sum(increase(ibm_aiops_aiops_insights_ui_request_total{code=~\"502\"}[$__range]) or vector(0))",
@@ -7786,8 +7506,7 @@
         },
         {
           "datasource": {
-            "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "name": "prometheus"
           },
           "description": "Count that tracks the number of 503 \"service unavailable\"within the time range",
           "fieldConfig": {
@@ -7821,7 +7540,7 @@
             "h": 3,
             "w": 3,
             "x": 18,
-            "y": 58
+            "y": 501
           },
           "id": 110,
           "options": {
@@ -7843,8 +7562,7 @@
           "targets": [
             {
               "datasource": {
-                "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "name": "prometheus"
               },
               "editorMode": "code",
               "expr": "sum(increase(ibm_aiops_aiops_insights_ui_request_total{code=~\"503\"}[$__range]) or vector(0))",
@@ -7858,8 +7576,7 @@
         },
         {
           "datasource": {
-            "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "name": "prometheus"
           },
           "description": "Count that tracks the number of 504 \"gateway timeout\" errors within the time range",
           "fieldConfig": {
@@ -7893,7 +7610,7 @@
             "h": 3,
             "w": 3,
             "x": 21,
-            "y": 58
+            "y": 501
           },
           "id": 112,
           "options": {
@@ -7915,8 +7632,7 @@
           "targets": [
             {
               "datasource": {
-                "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "name": "prometheus"
               },
               "editorMode": "code",
               "expr": "sum(increase(ibm_aiops_aiops_insights_ui_request_total{code=~\"504\"}[$__range]) or vector(0))",
@@ -7930,8 +7646,7 @@
         },
         {
           "datasource": {
-            "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "name": "prometheus"
           },
           "description": "Average request rates per minute by request & response",
           "fieldConfig": {
@@ -8045,7 +7760,7 @@
             "h": 6,
             "w": 15,
             "x": 9,
-            "y": 61
+            "y": 504
           },
           "id": 113,
           "options": {
@@ -8065,8 +7780,7 @@
           "targets": [
             {
               "datasource": {
-                "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "name": "prometheus"
               },
               "editorMode": "code",
               "expr": "sum(rate(ibm_aiops_aiops_insights_ui_request_total{code=~\"2..\"}[3m]) * 60) by (code, method)",
@@ -8076,8 +7790,7 @@
             },
             {
               "datasource": {
-                "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "name": "prometheus"
               },
               "editorMode": "code",
               "expr": "sum(rate(ibm_aiops_aiops_insights_ui_request_total{code=~\"4..\"}[3m]) * 60) by (code, method)",
@@ -8090,8 +7803,7 @@
             },
             {
               "datasource": {
-                "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "name": "prometheus"
               },
               "editorMode": "code",
               "expr": "sum(rate(ibm_aiops_aiops_insights_ui_request_total{code=~\"5..\"}[3m]) * 60) by (code, method)",
@@ -8110,7 +7822,8 @@
       "type": "row"
     }
   ],
-  "schemaVersion": 41,
+  "preload": false,
+  "schemaVersion": 42,
   "tags": [],
   "templating": {
     "list": []
@@ -8123,6 +7836,7 @@
   "timezone": "browser",
   "title": "IBM Cloud Pak for AIOps Component - Web UI",
   "uid": "a17c7c01-29cd-4ab9-adf9-efbe268fb134",
-  "version": 4,
-  "weekStart": ""
+  "version": 2,
+  "weekStart": "",
+  "id": null
 }
